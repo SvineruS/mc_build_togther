@@ -1,0 +1,14 @@
+name: BuildTogether
+version: '${project.version}'
+main: svinerus.buildtogether.BuildTogether
+api-version: 1.19
+prefix: logprefix
+depend: [ WorldEdit ]
+authors: [ authors ]
+description: description
+website: website
+commands:
+  bt:
+    description: Create buildTogether template at this location
+    usage: /bt <action> <building_name> [schematic_name>]
+    permission: buildtogether.bt
