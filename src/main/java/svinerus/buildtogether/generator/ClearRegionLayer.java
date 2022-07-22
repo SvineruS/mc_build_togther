@@ -1,9 +1,9 @@
-package svinerus.buildtogether.schema.generator;
+package svinerus.buildtogether.generator;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import org.bukkit.Material;
-import svinerus.buildtogether.schema.Layer;
+import svinerus.buildtogether.building.Layer;
 
 import java.util.HashMap;
 

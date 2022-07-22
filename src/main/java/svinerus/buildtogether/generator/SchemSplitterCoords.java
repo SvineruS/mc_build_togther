@@ -1,7 +1,7 @@
-package svinerus.buildtogether.schema.generator;
+package svinerus.buildtogether.generator;
 
 import com.sk89q.worldedit.math.BlockVector3;
-import svinerus.buildtogether.schema.Layer;
+import svinerus.buildtogether.building.Layer;
 
 import java.util.ArrayList;
 import java.util.Comparator;

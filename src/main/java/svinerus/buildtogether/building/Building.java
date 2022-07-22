@@ -7,8 +7,6 @@ import org.bukkit.World;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.events.BuildingFinished;
 import svinerus.buildtogether.events.LayerFinished;
-import svinerus.buildtogether.schema.BuildingSchema;
-import svinerus.buildtogether.schema.Layer;
 import svinerus.buildtogether.utils.Utils;
 
 import java.util.Comparator;

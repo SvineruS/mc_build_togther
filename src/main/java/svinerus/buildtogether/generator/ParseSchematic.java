@@ -1,4 +1,4 @@
-package svinerus.buildtogether.schema.generator;
+package svinerus.buildtogether.generator;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -9,8 +9,8 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import svinerus.buildtogether.schema.BuildingSchema;
-import svinerus.buildtogether.schema.Layer;
+import svinerus.buildtogether.building.BuildingSchema;
+import svinerus.buildtogether.building.Layer;
 import svinerus.buildtogether.utils.Utils;
 
 import java.io.File;

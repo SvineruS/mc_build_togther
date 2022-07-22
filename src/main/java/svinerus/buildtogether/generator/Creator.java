@@ -1,7 +1,7 @@
-package svinerus.buildtogether.schema.generator;
+package svinerus.buildtogether.generator;
 
 import org.bukkit.Location;
-import svinerus.buildtogether.schema.BuildingSchema;
+import svinerus.buildtogether.building.BuildingSchema;
 
 import java.io.IOException;
 

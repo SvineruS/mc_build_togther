@@ -1,4 +1,4 @@
-package svinerus.buildtogether.schema;
+package svinerus.buildtogether.building;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Material;
