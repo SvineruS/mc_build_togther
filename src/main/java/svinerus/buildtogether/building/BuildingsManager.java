@@ -19,7 +19,9 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
             throw new IllegalArgumentException("Building with name " + buildingName + " already exists");
 
         var schema = Creator.Create(schematicName, location);
-        buildings.put(buildingName, new Building(buildingName, schema));
+        var building = new Building(buildingName, schema);
+        buildings.put(buildingName, building);
+        building.show();
     }
 
     public void remove(String name) {

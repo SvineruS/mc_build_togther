@@ -12,16 +12,20 @@ import svinerus.buildtogether.utils.Utils;
 import java.util.Comparator;
 
 public class Building {
-    final String name;
-    final BuildingSchema buildingSchema;
-    final BlockTips tips = new BlockTips();
-    int activeLayerIndex = 0;
+    private final String name;
+    private final BuildingSchema buildingSchema;
+
+    // don't save this fields in json
+    private final transient BlockTips tips = new BlockTips();
+    private transient int activeLayerIndex = 0;
 
 
     public Building(String name, BuildingSchema buildingSchema) {
         this.name = name;
         this.buildingSchema = buildingSchema;
+    }
 
+    public void show() {
         this.checkLayerFinish();
     }
 
@@ -38,6 +42,7 @@ public class Building {
         if (newMat == Material.AIR && !activeLayer().isBlockCorrect(locVec, world()))
             return BlockPlacement.REMOVE_INCORRECT;
 
+        tips.show(loc, activeLayer().blocks.get(locVec));
         return BlockPlacement.INCORRECT;
     }
 

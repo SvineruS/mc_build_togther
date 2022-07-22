@@ -8,6 +8,7 @@ import svinerus.buildtogether.utils.Utils;
 import java.util.HashMap;
 
 public class Layer {
+    // todo store blockData
     final public HashMap<BlockVector3, Material> blocks;
 
     public Layer() {
