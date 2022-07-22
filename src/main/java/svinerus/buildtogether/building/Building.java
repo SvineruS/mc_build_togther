@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import svinerus.buildtogether.BuildTogether;
+import svinerus.buildtogether.events.BlockPlaced;
+import svinerus.buildtogether.events.LayerFinished;
 import svinerus.buildtogether.schema.BuildingSchema;
 import svinerus.buildtogether.schema.Layer;
 import svinerus.buildtogether.utils.Utils;
@@ -92,7 +94,11 @@ public class Building {
             }
         } while (activeLayer().isFinished(world()));
 
-        setBlockTips();      // set tips only one time
+        setBlockTips();
+
+        LayerFinished newEvent = new LayerFinished(this);
+        Bukkit.getServer().getPluginManager().callEvent(newEvent);
+
         return true;
     }
 
