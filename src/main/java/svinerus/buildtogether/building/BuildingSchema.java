@@ -1,11 +1,13 @@
 package svinerus.buildtogether.building;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 
@@ -26,6 +28,16 @@ public class BuildingSchema {
 
     public World world() {
         return BukkitAdapter.adapt(Objects.requireNonNull(region.getWorld()));
+    }
+
+    public static class Layer {
+        HashMap<BlockVector3, Material> blocks;
+        public Layer(HashMap<BlockVector3, Material> blocks) {
+            this.blocks = blocks;
+        }
+        public HashMap<BlockVector3, Material> blocks() {
+            return blocks;
+        }
     }
 }
 

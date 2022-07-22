@@ -1,5 +1,6 @@
 package svinerus.buildtogether.building;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,27 +34,27 @@ public class Building {
     public BlockPlacement blockPlaced(Location loc, Material newMat) {
         var locVec = Utils.toVector(loc);
 
-        if (activeLayer().isBlockCorrect(locVec, newMat)) {
+        if (isBlockCorrect(locVec, newMat)) {
             tips.hide(loc);
             Bukkit.getScheduler().runTaskLater(BuildTogether.instance, this::onCorrectBlockPlacement, 1);
             return BlockPlacement.CORRECT;
         }
 
-        if (newMat == Material.AIR && !activeLayer().isBlockCorrect(locVec, world()))
+        if (newMat == Material.AIR && !isBlockCorrect(locVec, world()))
             return BlockPlacement.REMOVE_INCORRECT;
 
-        tips.show(loc, activeLayer().blocks.get(locVec));
+        tips.show(loc, activeLayer().blocks().get(locVec));
         return BlockPlacement.INCORRECT;
     }
 
     public void shutdown() {
-        tips.hideAll();
+        if (tips != null) tips.hideAll();
     }
 
     public boolean isInside(Location location) {
         // todo check using region
         var locVec = Utils.toVector(location);
-        return activeLayer().blocks.containsKey(locVec);
+        return activeLayer().blocks().containsKey(locVec);
     }
 
     // find the closest incorrect block to this location
@@ -61,8 +62,8 @@ public class Building {
         if (!location.getWorld().equals(world())) throw new IllegalArgumentException("Wrong world");
         var locationVec = Utils.toVector(location);
 
-        var whereVec = activeLayer().blocks.keySet().stream()
-          .filter(l -> !activeLayer().isBlockCorrect(l, location.getWorld()))
+        var whereVec = activeLayer().blocks().keySet().stream()
+          .filter(l -> isBlockCorrect(l, location.getWorld()))
           .min(Comparator.comparingDouble(locationVec::distance)).orElse(null);
 
         if (whereVec == null) throw new IllegalArgumentException("No incorrect blocks");
@@ -88,7 +89,7 @@ public class Building {
 
     // return true on layer finished
     private boolean checkLayerFinish() {
-        if (!activeLayer().isFinished(world())) return false;
+        if (!isActiveLayerFinished(world())) return false;
         tips.hideAll();
 
         do {
@@ -97,7 +98,7 @@ public class Building {
                 onFinished();
                 return true;
             }
-        } while (activeLayer().isFinished(world()));
+        } while (isActiveLayerFinished(world()));
 
         setBlockTips();
 
@@ -108,22 +109,45 @@ public class Building {
     }
 
     private void setBlockTips() {
-        for (var locVec : activeLayer().blocks.keySet()) {
+        for (var locVec : activeLayer().blocks().keySet()) {
             var loc = Utils.toLocation(world(), locVec);
-            if (activeLayer().isBlockCorrect(locVec, world()))
+            if (isBlockCorrect(locVec, world()))
                 tips.hide(loc);
             else
-                tips.show(loc, activeLayer().blocks.get(locVec));
+                tips.show(loc, activeLayer().blocks().get(locVec));
         }
     }
 
-    private Layer activeLayer() {
+
+
+    private boolean isActiveLayerFinished(World world) {
+        for (var location : activeLayer().blocks().keySet())
+            if (!isBlockCorrect(location, world))
+                return false;
+        return true;
+    }
+
+    // is block set in real world equals block from schema
+    private boolean isBlockCorrect(BlockVector3 location, World world) {
+        return isBlockCorrect(location, Utils.toLocation(world, location).getBlock().getType());
+    }
+
+    // is passed block equals block from schema
+    private boolean isBlockCorrect(BlockVector3 location, Material material) {
+        return activeLayer().blocks().get(location) == material;
+    }
+
+    private BuildingSchema.Layer activeLayer() {
         return buildingSchema.layers.get(activeLayerIndex);
     }
 
 
     private World world() {
         return buildingSchema.world();
+    }
+
+    public String getName() {
+        return name;
     }
 }
 

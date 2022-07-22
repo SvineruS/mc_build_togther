@@ -10,7 +10,6 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import svinerus.buildtogether.building.BuildingSchema;
-import svinerus.buildtogether.building.Layer;
 import svinerus.buildtogether.utils.Utils;
 
 import java.io.File;
@@ -53,7 +52,7 @@ public class ParseSchematic {
         var worldMinimumPoint = BukkitAdapter.asBlockVector(worldOrigin).add(minimumPoint).subtract(schemaOrigin);
         var region = new CuboidRegion(worldMinimumPoint, worldMinimumPoint.add(dimensions));
         region.setWorld(BukkitAdapter.adapt(worldOrigin.getWorld()));
-        return new BuildingSchema(region, new Layer(layer));
+        return new BuildingSchema(region, new BuildingSchema.Layer(layer));
     }
 
 

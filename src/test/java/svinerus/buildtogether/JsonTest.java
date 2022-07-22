@@ -1,6 +1,5 @@
 package svinerus.buildtogether;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
@@ -9,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingSchema;
-import svinerus.buildtogether.building.Layer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,8 +22,9 @@ public class JsonTest {
         var locVec = BlockVector3.at(0, 0, 0);
         var mat = Material.AIR;
 
-        var layer = new Layer();
-        layer.blocks.put(locVec, mat);
+        var blocks = new HashMap<BlockVector3, Material>();
+        blocks.put(locVec, mat);
+        var layer = new BuildingSchema.Layer(blocks);
 
         var region = new CuboidRegion(BlockVector3.at(0, 0, 0), BlockVector3.at(10, 10, 10));
         var schema = new BuildingSchema(region, new ArrayList<>(List.of(layer)));

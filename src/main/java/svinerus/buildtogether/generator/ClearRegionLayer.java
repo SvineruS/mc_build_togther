@@ -3,12 +3,12 @@ package svinerus.buildtogether.generator;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import org.bukkit.Material;
-import svinerus.buildtogether.building.Layer;
+import svinerus.buildtogether.building.BuildingSchema;
 
 import java.util.HashMap;
 
 public class ClearRegionLayer {
-    public static Layer Create(Region reg) {
+    public static BuildingSchema.Layer Create(Region reg) {
         HashMap<BlockVector3, Material> layer = new HashMap<>();
 
         for (int x = reg.getMinimumPoint().getBlockX(); x < reg.getMaximumPoint().getBlockX(); x++) {
@@ -23,7 +23,7 @@ public class ClearRegionLayer {
 
             }
         }
-        return new Layer(layer);
+        return new BuildingSchema.Layer(layer);
     }
 
 }

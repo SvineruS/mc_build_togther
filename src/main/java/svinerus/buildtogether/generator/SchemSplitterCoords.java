@@ -1,7 +1,7 @@
 package svinerus.buildtogether.generator;
 
 import com.sk89q.worldedit.math.BlockVector3;
-import svinerus.buildtogether.building.Layer;
+import svinerus.buildtogether.building.BuildingSchema;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,9 +11,9 @@ import java.util.function.Function;
 
 class SchemSplitterCoords {
 
-    private List<Layer> layers = new ArrayList<>();
+    private List<BuildingSchema.Layer> layers = new ArrayList<>();
 
-    SchemSplitterCoords(Layer layerFrom) {
+    SchemSplitterCoords(BuildingSchema.Layer layerFrom) {
         this.layers.add(layerFrom);
     }
 
@@ -29,7 +29,7 @@ class SchemSplitterCoords {
         return split(BlockVector3::getBlockZ, asc);
     }
 
-    public List<Layer> collect() {
+    public List<BuildingSchema.Layer> collect() {
         return this.layers;
     }
 
@@ -40,21 +40,21 @@ class SchemSplitterCoords {
         return this;
     }
 
-    private static List<Layer> splitLayers(List<Layer> layersFrom, Function<BlockVector3, Integer> keyFunc, boolean ascSort) {
-        ArrayList<Layer> result = new ArrayList<>();
+    private static List<BuildingSchema.Layer> splitLayers(List<BuildingSchema.Layer> layersFrom, Function<BlockVector3, Integer> keyFunc, boolean ascSort) {
+        ArrayList<BuildingSchema.Layer> result = new ArrayList<>();
         Comparator<Integer> sort = ascSort ? Comparator.naturalOrder() : Comparator.reverseOrder();
         layersFrom.stream().map(layer -> splitLayer(layer, keyFunc, sort)).forEach(result::addAll);
         return result;
     }
 
-    private static List<Layer> splitLayer(Layer layerFrom, Function<BlockVector3, Integer> keyFunc, Comparator<Integer> sort) {
-        HashMap<Integer, Layer> layers = new HashMap<>();
-        for (var blockLoc : layerFrom.blocks.keySet()) {
+    private static List<BuildingSchema.Layer> splitLayer(BuildingSchema.Layer layerFrom, Function<BlockVector3, Integer> keyFunc, Comparator<Integer> sort) {
+        HashMap<Integer, BuildingSchema.Layer> layers = new HashMap<>();
+        for (var blockLoc : layerFrom.blocks().keySet()) {
 
             Integer key = keyFunc.apply(blockLoc);
-            if (!layers.containsKey(key)) layers.put(key, new Layer());
+            if (!layers.containsKey(key)) layers.put(key, new BuildingSchema.Layer(new HashMap<>()));
 
-            layers.get(key).blocks.put(blockLoc, layerFrom.blocks.get(blockLoc));
+            layers.get(key).blocks().put(blockLoc, layerFrom.blocks().get(blockLoc));
 
         }
         return layers.keySet().stream()
