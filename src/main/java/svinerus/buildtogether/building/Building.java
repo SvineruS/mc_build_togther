@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import svinerus.buildtogether.BuildTogether;
-import svinerus.buildtogether.events.BlockPlaced;
+import svinerus.buildtogether.events.BuildingFinished;
 import svinerus.buildtogether.events.LayerFinished;
 import svinerus.buildtogether.schema.BuildingSchema;
 import svinerus.buildtogether.schema.Layer;
@@ -76,8 +76,10 @@ public class Building {
 
 
     private void onFinished() {
+        BuildingFinished newEvent = new BuildingFinished(this);
+        Bukkit.getServer().getPluginManager().callEvent(newEvent);
+
         BuildingsManager.instance.remove(name);
-        System.out.println("Building onFinished");
     }
 
 
