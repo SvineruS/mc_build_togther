@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 
 class BlockTips {
-    HashMap<Location, BlockTip> tips = new HashMap<>();
+    final HashMap<Location, BlockTip> tips = new HashMap<>();
 
     public void show(Location location, Material material) {
         if (!tips.containsKey(location))
@@ -31,7 +31,7 @@ class BlockTips {
 }
 
 class BlockTip {
-    ArmorStand stand;
+    final ArmorStand stand;
 
     public BlockTip(Location location, Material material) {
         if (material == Material.AIR) {

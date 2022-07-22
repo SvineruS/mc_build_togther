@@ -2,19 +2,15 @@ package svinerus.buildtogether.building;
 
 import org.bukkit.Location;
 import svinerus.buildtogether.schema.generator.Creator;
+import svinerus.buildtogether.utils.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BuildingsManager {
+public record BuildingsManager(HashMap<String, Building> buildings) {
     public static BuildingsManager instance;
-    public HashMap<String, Building> buildings;
-
-    public BuildingsManager(HashMap<String, Building> buildings) {
-        this.buildings = buildings;
-    }
 
 // todo save to cfg
 
@@ -34,8 +30,9 @@ public class BuildingsManager {
         buildings.remove(name);
     }
 
-    public void shutdown() {
+    public void shutdown() throws IOException {
         buildings.values().forEach(Building::shutdown);
+        Config.saveBuildings(BuildingsManager.instance.buildings);
     }
 
     public Building getBuilding(Location location) {

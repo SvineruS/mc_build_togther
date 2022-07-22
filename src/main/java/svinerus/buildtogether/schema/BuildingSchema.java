@@ -5,11 +5,12 @@ import com.sk89q.worldedit.regions.Region;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class BuildingSchema {
-    public Region region;
-    public ArrayList<Layer> layers;
+    final public Region region;
+    final public ArrayList<Layer> layers;
 
     public BuildingSchema(Region region, ArrayList<Layer> layers) {
         this.region = region;
@@ -23,7 +24,7 @@ public class BuildingSchema {
     }
 
     public World world() {
-        return BukkitAdapter.adapt(region.getWorld());
+        return BukkitAdapter.adapt(Objects.requireNonNull(region.getWorld()));
     }
 }
 

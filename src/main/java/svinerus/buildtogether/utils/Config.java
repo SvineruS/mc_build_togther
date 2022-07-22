@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class Config {
-    static Gson gson = new Gson();
+    final static Gson gson = new Gson();
 
 
     public static HashMap<String, Building> loadBuildings() throws IOException {

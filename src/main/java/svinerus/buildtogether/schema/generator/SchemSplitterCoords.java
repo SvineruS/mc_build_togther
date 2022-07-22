@@ -18,15 +18,15 @@ class SchemSplitterCoords {
     }
 
     public SchemSplitterCoords splitX(boolean asc) {
-        return split(this.layers, BlockVector3::getBlockX, asc);
+        return split(BlockVector3::getBlockX, asc);
     }
 
     public SchemSplitterCoords splitY(boolean asc) {
-        return split(this.layers, BlockVector3::getBlockY, asc);
+        return split(BlockVector3::getBlockY, asc);
     }
 
     public SchemSplitterCoords splitZ(boolean asc) {
-        return split(this.layers, BlockVector3::getBlockZ, asc);
+        return split(BlockVector3::getBlockZ, asc);
     }
 
     public List<Layer> collect() {
@@ -35,7 +35,7 @@ class SchemSplitterCoords {
 
 
     // if asc is true, then the order is from lesser to greater
-    private SchemSplitterCoords split(List<Layer> layersFrom, Function<BlockVector3, Integer> keyFunc, boolean ascSort) {
+    private SchemSplitterCoords split(Function<BlockVector3, Integer> keyFunc, boolean ascSort) {
         this.layers = splitLayers(this.layers, keyFunc, ascSort);
         return this;
     }

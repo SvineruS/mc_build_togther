@@ -8,7 +8,7 @@ import svinerus.buildtogether.utils.Utils;
 import java.util.HashMap;
 
 public class Layer {
-    public HashMap<BlockVector3, Material> blocks;
+    final public HashMap<BlockVector3, Material> blocks;
 
     public Layer() {
         this.blocks = new HashMap<>();

@@ -12,9 +12,9 @@ import svinerus.buildtogether.utils.Utils;
 import java.util.Comparator;
 
 public class Building {
-    String name;
-    BuildingSchema buildingSchema;
-    BlockTips tips = new BlockTips();
+    final String name;
+    final BuildingSchema buildingSchema;
+    final BlockTips tips = new BlockTips();
     int activeLayerIndex = 0;
 
 

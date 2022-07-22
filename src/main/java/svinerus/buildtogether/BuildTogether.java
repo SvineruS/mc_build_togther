@@ -49,9 +49,8 @@ public final class BuildTogether extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        BuildingsManager.instance.shutdown();
         try {
-            Config.saveBuildings(BuildingsManager.instance.buildings);
+            BuildingsManager.instance.shutdown();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

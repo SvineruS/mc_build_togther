@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.BuildingsManager;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
     // This method is called, when somebody uses our command
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         try {
             if (args.length < 1) throw new Exception("Enter subcommand");
             switch (args[0]) {
@@ -44,7 +45,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length <= 1) return new ArrayList<>(List.of(
           "create", "delete", "where", "list"
         ));
@@ -85,7 +86,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "building deleted!");
     }
 
-    void list(CommandSender sender, String[] args) throws Exception {
+    void list(CommandSender sender, String[] args) {
         var names = buildingNames();
         var namesText = names.isEmpty() ? "Empty" :
           String.join(",", names.toArray(new String[0]));
