@@ -1,10 +1,9 @@
 package svinerus.buildtogether;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.utils.CommandListener;
@@ -19,34 +18,21 @@ public final class BuildTogether extends JavaPlugin {
     public static BuildTogether instance;
 
     public static WorldEditPlugin WEPlugin;
-    public static RegionQuery WGRegionQuery;
 
     @Override
     public void onEnable() {
         instance = this;
+        WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit"); // init world edit
 
-        // register events
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
-        // register commands
+        // register events and commands
+        EventListener.register(this);
         CommandListener.register(this);
 
-
-        // read config
-        HashMap<String, Building> building = new HashMap<>();
-        try {
-            building = Config.loadBuildings();
-        } catch (java.nio.file.NoSuchFileException ignored) {
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-            this.getLogger().warning("Failed to load config");
-        }
-
         // create buildings manager
+        HashMap<String, Building> building = loadBuildings();
         BuildingsManager.instance = new BuildingsManager(building);
-
-        // init world edit
-        initWorldEdit();
     }
+
 
     @Override
     public void onDisable() {
@@ -57,11 +43,17 @@ public final class BuildTogether extends JavaPlugin {
         }
     }
 
-    void initWorldEdit() {
-        WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
-        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null) {
-            WGRegionQuery = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
-        }
 
+    @NotNull
+    private HashMap<String, Building> loadBuildings() {
+        HashMap<String, Building> building = new HashMap<>();
+        try {
+            building = Config.loadBuildings();
+        } catch (java.nio.file.NoSuchFileException ignored) {
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            this.getLogger().warning("Failed to load config");
+        }
+        return building;
     }
 }

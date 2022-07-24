@@ -8,11 +8,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.events.BlockPlaced;
 
 public class EventListener implements Listener {
+
+    public static void register(JavaPlugin plugin) {
+        plugin.getServer().getPluginManager().registerEvents(new EventListener(), plugin);
+    }
+
     @EventHandler
     public void onPlaceBlock(BlockPlaceEvent event) {
         var eventCancelled = onChangeBlock(event, event.getBlockPlaced().getType());
