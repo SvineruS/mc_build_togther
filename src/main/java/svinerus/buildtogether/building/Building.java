@@ -17,13 +17,20 @@ public class Building {
     private final BuildingSchema buildingSchema;
 
     // don't save this fields in json
-    private final transient BlockTips tips = new BlockTips();
+    private transient BlockTips tips;
     private transient int activeLayerIndex = 0;
 
 
     public Building(String name, BuildingSchema buildingSchema) {
         this.name = name;
         this.buildingSchema = buildingSchema;
+        onEnable();
+    }
+
+    public void onEnable() {
+        this.tips = new BlockTips();
+        // todo if this.visible
+        show();
     }
 
     public void show() {

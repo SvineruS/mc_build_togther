@@ -117,7 +117,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
     static List<String> schematicNames() {
         try {
-            return Utils.allFiles(Paths.get(Utils.schematicsPath)).stream()
+            return Utils.allFiles(Utils.schematicsPath()).stream()
               .map(p -> p.getFileName().toString())
               .filter(p -> p.endsWith(".schem"))
               .map(p -> p.substring(0, p.length() - 6))

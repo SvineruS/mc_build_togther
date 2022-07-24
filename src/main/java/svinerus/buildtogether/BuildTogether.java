@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.utils.CommandListener;
-import svinerus.buildtogether.utils.Config;
+import svinerus.buildtogether.utils.config.Config;
 import svinerus.buildtogether.utils.EventListener;
 
 import java.io.IOException;
@@ -37,6 +37,7 @@ public final class BuildTogether extends JavaPlugin {
             building = Config.loadBuildings();
         } catch (java.nio.file.NoSuchFileException ignored) {
         } catch (Exception e) {
+            e.printStackTrace(System.out);
             this.getLogger().warning("Failed to load config");
         }
 

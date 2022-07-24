@@ -16,7 +16,9 @@ import java.util.List;
 
 public class Utils {
 
-    final public static String schematicsPath = BuildTogether.WEPlugin.getDataFolder().getAbsolutePath() + "/schematics/";
+    public static Path schematicsPath() {
+        return BuildTogether.WEPlugin.getDataFolder().toPath().resolve("schematics");
+    }
 
 
     public static void spawnParticles(Location l, Particle particle) {

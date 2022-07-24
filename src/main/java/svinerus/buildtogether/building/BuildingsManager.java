@@ -2,7 +2,7 @@ package svinerus.buildtogether.building;
 
 import org.bukkit.Location;
 import svinerus.buildtogether.generator.Creator;
-import svinerus.buildtogether.utils.Config;
+import svinerus.buildtogether.utils.config.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,7 +12,10 @@ import java.util.List;
 public record BuildingsManager(HashMap<String, Building> buildings) {
     public static BuildingsManager instance;
 
-// todo save to cfg
+    public BuildingsManager(HashMap<String, Building> buildings) {
+        this.buildings = buildings;
+        buildings.values().forEach(Building::onEnable);
+    }
 
     public void create(String buildingName, String schematicName, Location location) throws IOException, IllegalArgumentException {
         if (buildings.containsKey(buildingName))
@@ -21,7 +24,6 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
         var schema = Creator.Create(schematicName, location);
         var building = new Building(buildingName, schema);
         buildings.put(buildingName, building);
-        building.show();
     }
 
     public void remove(String name) {

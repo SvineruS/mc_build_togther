@@ -57,7 +57,7 @@ public class ParseSchematic {
 
 
     private static Clipboard loadSchematic(String schematicName) throws IOException {
-        var file = new File(Utils.schematicsPath + schematicName + ".schem");
+        var file = Utils.schematicsPath().resolve(schematicName + ".schem").toFile();
 
         ClipboardFormat format = ClipboardFormats.findByFile(file);
         assert format != null;
