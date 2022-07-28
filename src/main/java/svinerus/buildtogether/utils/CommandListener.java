@@ -12,11 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.BuildingsManager;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommandListener implements CommandExecutor, TabCompleter {
 
@@ -78,20 +79,9 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String schematicName = args[2];
 
         var building = BuildingsManager.instance.create(buildingName, schematicName, ((Entity) sender).getLocation());
-        var blocksCount = building.getBuildingSchema().blocksCount();
-        var getWorldBlocks = building.getBuildingSchema().getWorldBlocks();
-        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "new blocks: " + blocksCount(blocksCount) );
-        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "blocks to replace: " + blocksCount(getWorldBlocks));
-        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "building created!");
-    }
-
-    private String blocksCount(HashMap<Material, Integer> map){
-        var result = new StringBuilder();
-        map.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue())
-                .forEach(e -> result.append(e.getKey()).append(": ").append(e.getValue()).append("\n"));
-        return result.toString();
+        sendPluginMsg(sender, "block to build: " + blocksCount(building.getBuildingSchema().getSchemaBlocks()));
+        sendPluginMsg(sender, "blocks to remove: " + blocksCount(building.getBuildingSchema().getWorldBlocks()));
+        sendPluginMsg(sender, "building created!");
     }
 
     void delete(CommandSender sender, String[] args) throws Exception {
@@ -99,7 +89,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         String buildingName = args[1];
         BuildingsManager.instance.remove(buildingName);
-        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "building deleted!");
+        sendPluginMsg(sender, "building deleted!");
     }
 
     void list(CommandSender sender, String[] args) {
@@ -107,7 +97,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         var namesText = names.isEmpty() ? "Empty" :
           String.join(",", names.toArray(new String[0]));
 
-        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + namesText);
+        sendPluginMsg(sender, namesText);
     }
 
 
@@ -122,7 +112,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             // todo check perms
             ((Entity) sender).teleport(where);
         } else {
-            sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "Nearest block is " +
+            sendPluginMsg(sender, "Nearest block is " +
               where.getBlockX() + " " + where.getBlockY() + " " + where.getBlockZ());
         }
     }
@@ -142,5 +132,25 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             return new ArrayList<>();
         }
     }
+
+    private void sendPluginMsg(CommandSender sender, String text) {
+        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + text);
+    }
+
+    private String blocksCount(Stream<Material> materials) {
+        var matCounts = materials.collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+
+        var result = new StringBuilder();
+        matCounts.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByValue())
+          .forEach(e -> result
+            .append(e.getKey())
+            .append(": ")
+            .append(e.getValue())
+            .append("\n"));
+        return result.toString();
+    }
+
 
 }

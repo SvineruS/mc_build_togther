@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 
 public class BuildingSchema {
@@ -24,29 +25,15 @@ public class BuildingSchema {
         this.layers.add(layer);
     }
 
-    public HashMap<Material, Integer> blocksCount() {
-        HashMap<Material, Integer> result = new HashMap<>();
-        for (var layer : layers) {
-            for (var material : layer.blocks.values()) {
-                if (!result.containsKey(material))
-                    result.put(material, 0);
-                result.put(material, result.get(material) + 1);
-            }
-        }
-        return result;
+    public Stream<Material> getSchemaBlocks() {
+        return layers.stream()
+          .flatMap(layer -> layer.blocks.values().stream());
     }
 
-    public HashMap<Material, Integer> getWorldBlocks() {
-        HashMap<Material, Integer> result = new HashMap<>();
-        for (var layer : layers) {
-            for (var block : layer.blocks.keySet()) {
-                var material = (world().getBlockAt(block.getX(), block.getY(), block.getZ()).getType());
-                if (!result.containsKey(material))
-                    result.put(material, 0);
-                result.put(material, result.get(material) + 1);
-            }
-        }
-        return result;
+    public Stream<Material> getWorldBlocks() {
+        return layers.stream()
+          .flatMap(layer -> layer.blocks.keySet().stream())
+          .map(locVec -> world().getBlockAt(locVec.getX(), locVec.getY(), locVec.getZ()).getType());
     }
 
     public World world() {

@@ -50,6 +50,8 @@ public class Building {
         if (newMat == Material.AIR && !isBlockCorrect(locVec, world()))
             return BlockPlacement.REMOVE_INCORRECT;
 
+        // todo almost correct blocks
+
         tips.show(loc, activeLayer().blocks().get(locVec));
         return BlockPlacement.INCORRECT;
     }
