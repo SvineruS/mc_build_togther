@@ -70,11 +70,15 @@ public class Building {
         var locationVec = Utils.toVector(location);
 
         var whereVec = activeLayer().blocks().keySet().stream()
-          .filter(l -> isBlockCorrect(l, location.getWorld()))
-          .min(Comparator.comparingDouble(locationVec::distance)).orElse(null);
+                .filter(l -> isBlockCorrect(l, location.getWorld()))
+                .min(Comparator.comparingDouble(locationVec::distance)).orElse(null);
 
         if (whereVec == null) throw new IllegalArgumentException("No incorrect blocks");
         return Utils.toLocation(world(), whereVec);
+    }
+
+    public double progress() {
+        return (double) activeLayerIndex / this.buildingSchema.layers.size();
     }
 
 
@@ -124,7 +128,6 @@ public class Building {
                 tips.show(loc, activeLayer().blocks().get(locVec));
         }
     }
-
 
 
     private boolean isActiveLayerFinished(World world) {
