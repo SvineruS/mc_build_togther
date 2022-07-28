@@ -36,10 +36,16 @@ public class BuildingSchema {
         return result;
     }
 
-    public Set<BlockVector3> blocksLocation() {
-        Set<BlockVector3> result = new HashSet<>();
-        for (var layer : layers)
-            result.addAll(layer.blocks.keySet());
+    public HashMap<Material, Integer> getWorldBlocks() {
+        HashMap<Material, Integer> result = new HashMap<>();
+        for (var layer : layers) {
+            for (var block : layer.blocks.keySet()) {
+                var material = (world().getBlockAt(block.getX(), block.getY(), block.getZ()).getType());
+                if (!result.containsKey(material))
+                    result.put(material, 0);
+                result.put(material, result.get(material) + 1);
+            }
+        }
         return result;
     }
 

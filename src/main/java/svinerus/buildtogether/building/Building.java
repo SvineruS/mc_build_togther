@@ -159,6 +159,10 @@ public class Building {
     public String getName() {
         return name;
     }
+
+    public BuildingSchema getBuildingSchema() {
+        return buildingSchema;
+    }
 }
 
 

@@ -17,13 +17,14 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
         buildings.values().forEach(Building::onEnable);
     }
 
-    public void create(String buildingName, String schematicName, Location location) throws IOException, IllegalArgumentException {
+    public Building create(String buildingName, String schematicName, Location location) throws IOException, IllegalArgumentException {
         if (buildings.containsKey(buildingName))
             throw new IllegalArgumentException("Building with name " + buildingName + " already exists");
 
         var schema = Creator.Create(schematicName, location);
         var building = new Building(buildingName, schema);
         buildings.put(buildingName, building);
+        return building;
     }
 
     public void remove(String name) {

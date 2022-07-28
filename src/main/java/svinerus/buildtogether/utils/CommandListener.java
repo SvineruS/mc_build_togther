@@ -1,6 +1,7 @@
 package svinerus.buildtogether.utils;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +14,9 @@ import svinerus.buildtogether.building.BuildingsManager;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommandListener implements CommandExecutor, TabCompleter {
 
@@ -74,8 +77,21 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String buildingName = args[1];
         String schematicName = args[2];
 
-        BuildingsManager.instance.create(buildingName, schematicName, ((Entity) sender).getLocation());
+        var building = BuildingsManager.instance.create(buildingName, schematicName, ((Entity) sender).getLocation());
+        var blocksCount = building.getBuildingSchema().blocksCount();
+        var getWorldBlocks = building.getBuildingSchema().getWorldBlocks();
+        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "new blocks: " + blocksCount(blocksCount) );
+        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "blocks to replace: " + blocksCount(getWorldBlocks));
         sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + "building created!");
+    }
+
+    private String blocksCount(HashMap<Material, Integer> map){
+        var result = new StringBuilder();
+        map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(e -> result.append(e.getKey()).append(": ").append(e.getValue()).append("\n"));
+        return result.toString();
     }
 
     void delete(CommandSender sender, String[] args) throws Exception {
