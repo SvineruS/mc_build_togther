@@ -47,12 +47,13 @@ public class Building {
             return BlockPlacement.CORRECT;
         }
 
-        if (newMat == Material.AIR && !isBlockCorrect(locVec, world()))
+        if (newMat == Material.AIR && !isBlockCorrect(locVec, world())) {
+            tips.show(loc, activeLayer().blocks().get(locVec));
             return BlockPlacement.REMOVE_INCORRECT;
+        }
 
         // todo almost correct blocks
 
-        tips.show(loc, activeLayer().blocks().get(locVec));
         return BlockPlacement.INCORRECT;
     }
 
