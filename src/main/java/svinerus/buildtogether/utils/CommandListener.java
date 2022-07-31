@@ -3,7 +3,6 @@ package svinerus.buildtogether.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,7 +11,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 import svinerus.buildtogether.building.BuildingsManager;
 
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             if (args.length < 1) throw new Exception("Enter subcommand");
             switch (args[0]) {
                 case "create" -> create(sender, args);
-                case "delete" -> delete(sender, args);
+                case "remove" -> remove(sender, args);
                 case "where" -> where(sender, args);
                 case "list" -> list(sender, args);
                 default -> throw new Exception("Unknown subcommand");
@@ -54,17 +52,15 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length <= 1) return new ArrayList<>(List.of(
-          "create", "delete", "where", "list"
+          "create", "remove", "where", "list"
         ));
         switch (args[0]) {
             case "create" -> {
                 if (args.length == 2) return new ArrayList<>(List.of("[name_of_new_building]"));
                 if (args.length == 3) return schematicNames();
-                return new ArrayList<>();
             }
-            case "delete" -> {
+            case "remove" -> {
                 if (args.length == 2) return buildingNames();
-                return new ArrayList<>();
             }
             case "where" -> {
                 if (args.length == 2) return buildingNames();
@@ -92,12 +88,12 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         sendPluginMsg(sender, "building created!");
     }
 
-    void delete(CommandSender sender, String[] args) throws Exception {
+    void remove(CommandSender sender, String[] args) throws Exception {
         if (args.length != 2) throw new Exception("Wrong number of arguments");
 
         String buildingName = args[1];
         BuildingsManager.instance.remove(buildingName);
-        sendPluginMsg(sender, "building deleted!");
+        sendPluginMsg(sender, "building removed!");
     }
 
     void list(CommandSender sender, String[] args) {
