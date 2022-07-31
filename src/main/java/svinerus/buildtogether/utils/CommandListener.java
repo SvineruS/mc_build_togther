@@ -1,5 +1,8 @@
 package svinerus.buildtogether.utils;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -9,11 +12,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 import svinerus.buildtogether.building.BuildingsManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,7 +46,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             }
         } catch (Exception e) {
             e.printStackTrace(System.out);
-            sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.RED + e);
+            sendPluginMsg(sender, Component.text(e.toString()).color(NamedTextColor.RED));
         }
         return true;
     }
@@ -79,8 +82,13 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String schematicName = args[2];
 
         var building = BuildingsManager.instance.create(buildingName, schematicName, ((Entity) sender).getLocation());
-        sendPluginMsg(sender, "block to build: " + blocksCount(building.getBuildingSchema().getSchemaBlocks()));
-        sendPluginMsg(sender, "blocks to remove: " + blocksCount(building.getBuildingSchema().getWorldBlocks()));
+        sendPluginMsg(sender,
+          Component.text("blocks to build:").color(NamedTextColor.WHITE)
+          .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
+        );
+        sendPluginMsg(sender,
+          Component.text("blocks to remove:").color(NamedTextColor.WHITE)
+            .append(blocksCount(building.getBuildingSchema().getWorldBlocks())));
         sendPluginMsg(sender, "building created!");
     }
 
@@ -133,24 +141,31 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         }
     }
 
-    private void sendPluginMsg(CommandSender sender, String text) {
-        sender.sendMessage(ChatColor.GOLD + "[BuildTogether] " + ChatColor.GREEN + text);
-    }
 
-    private String blocksCount(Stream<Material> materials) {
+    private TextComponent.Builder blocksCount(Stream<Material> materials) {
+        var result = Component.text();
+
         var matCounts = materials.collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+        matCounts.remove(Material.AIR);
 
-        var result = new StringBuilder();
         matCounts.entrySet()
           .stream()
           .sorted(Map.Entry.comparingByValue())
           .forEach(e -> result
-            .append(e.getKey())
-            .append(": ")
-            .append(e.getValue())
-            .append("\n"));
-        return result.toString();
+            .append(Component.text("\n"))
+            .append(Component.translatable(e.getKey()).color(NamedTextColor.BLUE))
+            .append(Component.text(": ").color(NamedTextColor.GRAY))
+            .append(Component.text(e.getValue())).color(NamedTextColor.WHITE));
+
+        return result;
     }
 
+    private static final TextComponent text_ = Component.text("[BuildTogether] ").color(NamedTextColor.GOLD);
+    private void sendPluginMsg(CommandSender sender, String text) {
+        sendPluginMsg(sender, Component.text(text).color(NamedTextColor.GREEN));
+    }
+    private void sendPluginMsg(CommandSender sender, TextComponent textComponent) {
+        sender.sendMessage(text_.append(textComponent));
+    }
 
 }
