@@ -15,10 +15,11 @@ import java.util.Comparator;
 public class Building {
     private final String name;
     private final BuildingSchema buildingSchema;
+    private int activeLayerIndex = 0;
+//    private boolean enabled = true;  // TODO
 
     // don't save this fields in json
     private transient BlockTips tips;
-    private transient int activeLayerIndex = 0;
 
 
     public Building(String name, BuildingSchema buildingSchema) {
