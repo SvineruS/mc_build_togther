@@ -2,7 +2,6 @@ package svinerus.buildtogether.utils;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.*;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 import svinerus.buildtogether.BuildTogether;
@@ -25,20 +24,18 @@ public class Utils {
         l.getWorld().spawnParticle(particle, l.toCenterLocation(), 10, 0.5F, 0.5F, 0.5F);
     }
 
-    public static void spawnFireworks(Location loc, int amount) {
-        Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-        FireworkMeta fwm = fw.getFireworkMeta();
-
-        fwm.setPower(2);
-        fwm.addEffect(FireworkEffect.builder().withColor(Color.LIME).flicker(true).build());
-
-        fw.setFireworkMeta(fwm);
-//        fw.detonate();
-
-        for (int i = 0; i < amount; i++) {
-            Firework fw2 = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-            fw2.setFireworkMeta(fwm);
-        }
+    public static void spawnFirework(Location loc) {
+        FireworkEffect effect = FireworkEffect.builder()
+          .withFlicker().withFade()
+          .with(FireworkEffect.Type.BALL_LARGE)
+          .withColor(Color.RED, Color.LIME, Color.AQUA, Color.YELLOW, Color.FUCHSIA, Color.ORANGE, Color.NAVY, Color.BLUE, Color.GREEN, Color.PURPLE)
+          .withFade(Color.RED, Color.LIME, Color.AQUA, Color.YELLOW, Color.FUCHSIA, Color.ORANGE, Color.NAVY, Color.BLUE, Color.GREEN, Color.PURPLE)
+          .build();
+        Firework firework = loc.getWorld().spawn(loc, Firework.class);
+        FireworkMeta fwm = firework.getFireworkMeta();
+        fwm.clearEffects();
+        fwm.addEffect(effect);
+        firework.setFireworkMeta(fwm);
     }
     public static List<Path> allFiles(Path root) throws IOException {
         List<Path> pathList = new ArrayList<>();

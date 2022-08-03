@@ -99,7 +99,7 @@ public class Building {
         if (!checkLayerFinish()) return;
 
         var loc = Utils.toLocation(world(), buildingSchema.region.getCenter().toBlockPoint());
-        Utils.spawnFireworks(loc, 2);
+        Utils.spawnFirework(loc);
     }
 
 
