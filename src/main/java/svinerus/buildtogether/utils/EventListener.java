@@ -11,7 +11,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.building.BuildingsManager;
-import svinerus.buildtogether.events.BlockPlaced;
+import svinerus.buildtogether.events.BlockPlacedEvent;
 
 public class EventListener implements Listener {
 
@@ -41,7 +41,7 @@ public class EventListener implements Listener {
 
         var blockPlacement = building.blockPlaced(loc, newMat);
 
-        BlockPlaced newEvent = new BlockPlaced(building, event, blockPlacement);
+        BlockPlacedEvent newEvent = new BlockPlacedEvent(building, event, blockPlacement);
         Bukkit.getServer().getPluginManager().callEvent(newEvent);
 
         if (blockPlacement == BlockPlacement.INCORRECT) {

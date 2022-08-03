@@ -5,12 +5,12 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.Building;
 
-public class BuildingFinished extends Event {
+public class LayerFinishedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final Building building;
 
-    public BuildingFinished(Building building) {
+    public LayerFinishedEvent(Building building) {
         this.building = building;
     }
 

@@ -6,8 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import svinerus.buildtogether.BuildTogether;
-import svinerus.buildtogether.events.BuildingFinished;
-import svinerus.buildtogether.events.LayerFinished;
+import svinerus.buildtogether.events.BuildingFinishedEvent;
+import svinerus.buildtogether.events.LayerFinishedEvent;
 import svinerus.buildtogether.utils.Utils;
 
 import java.util.Comparator;
@@ -104,7 +104,7 @@ public class Building {
 
 
     private void onFinished() {
-        BuildingFinished newEvent = new BuildingFinished(this);
+        BuildingFinishedEvent newEvent = new BuildingFinishedEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(newEvent);
 
         BuildingsManager.instance.remove(name);
@@ -126,7 +126,7 @@ public class Building {
 
         setBlockTips();
 
-        LayerFinished newEvent = new LayerFinished(this);
+        LayerFinishedEvent newEvent = new LayerFinishedEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(newEvent);
 
         return true;
