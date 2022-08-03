@@ -2,7 +2,7 @@ package svinerus.buildtogether.building;
 
 import org.bukkit.Location;
 import svinerus.buildtogether.generator.Creator;
-import svinerus.buildtogether.utils.config.Config;
+import svinerus.buildtogether.utils.storage.Storage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
 
     public void shutdown() throws IOException {
         buildings.values().forEach(Building::shutdown);
-        Config.saveBuildings(BuildingsManager.instance.buildings);
+        Storage.Buildings.saveBuildings(BuildingsManager.instance.buildings);
     }
 
     public Building getBuilding(Location location) {
