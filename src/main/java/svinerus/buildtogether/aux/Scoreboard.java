@@ -23,9 +23,10 @@ public class Scoreboard {
     }
 
     private Objective getObjective(String name) {
-        var scoreboardObjective = scoreboard.getObjective("bt_" + name);
+        name = "bt_" + name;
+        var scoreboardObjective = scoreboard.getObjective(name);
         if (scoreboardObjective == null)
-            scoreboardObjective = scoreboard.registerNewObjective("BuildTogether", "dummy");
+            scoreboardObjective = scoreboard.registerNewObjective(name, "dummy");
         return scoreboardObjective;
     }
 
