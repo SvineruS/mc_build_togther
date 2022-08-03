@@ -9,7 +9,8 @@ import svinerus.buildtogether.aux.Rewards;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.utils.CommandListener;
-import svinerus.buildtogether.utils.storage.Storage;
+import svinerus.buildtogether.utils.storage.Buildings;
+import svinerus.buildtogether.utils.storage.ExtractingFiles;
 import svinerus.buildtogether.utils.EventListener;
 
 import java.io.IOException;
@@ -24,14 +25,17 @@ public final class BuildTogether extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        this.saveDefaultConfig();
+
+        // load required WorldEdit plugin
         WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 
         // create buildings manager
-        HashMap<String, Building> building = loadBuildings();
+        HashMap<String, Building> building = Buildings.loadBuildingsSafe();
         BuildingsManager.instance = new BuildingsManager(building);
 
         // extract files from jar if not exist
-        Storage.ExtractingFiles.ensureFilesExist();
+        ExtractingFiles.ensureFilesExist();
 
         // register events and commands
         EventListener.register(this);
@@ -56,17 +60,4 @@ public final class BuildTogether extends JavaPlugin {
         }
     }
 
-
-    @NotNull
-    private HashMap<String, Building> loadBuildings() {
-        HashMap<String, Building> building = new HashMap<>();
-        try {
-            building = Storage.Buildings.loadBuildings();
-        } catch (java.nio.file.NoSuchFileException ignored) {
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-            this.getLogger().warning("Failed to load config");
-        }
-        return building;
-    }
 }
