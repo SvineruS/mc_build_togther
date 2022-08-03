@@ -2,6 +2,8 @@ package svinerus.buildtogether.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -80,7 +82,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         var building = BuildingsManager.instance.create(buildingName, schematicName, ((Entity) sender).getLocation());
         sendPluginMsg(sender,
           Component.text("blocks to build:").color(NamedTextColor.WHITE)
-          .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
+            .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
         );
         sendPluginMsg(sender,
           Component.text("blocks to remove:").color(NamedTextColor.WHITE)
@@ -116,8 +118,12 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             // todo check perms
             ((Entity) sender).teleport(where);
         } else {
-            sendPluginMsg(sender, "Nearest block is " +
-              where.getBlockX() + " " + where.getBlockY() + " " + where.getBlockZ());
+            sendPluginMsg(sender, Component.text("Nearest block is ", NamedTextColor.WHITE).append(
+              Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]")
+                .color(NamedTextColor.GREEN)
+                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/bt " + String.join(" ", args) + " -t"))
+            ));
         }
     }
 
@@ -157,9 +163,11 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     }
 
     private static final TextComponent text_ = Component.text("[BuildTogether] ").color(NamedTextColor.GOLD);
+
     private void sendPluginMsg(CommandSender sender, String text) {
-        sendPluginMsg(sender, Component.text(text).color(NamedTextColor.GREEN));
+        sendPluginMsg(sender, Component.text(text).color(NamedTextColor.WHITE));
     }
+
     private void sendPluginMsg(CommandSender sender, TextComponent textComponent) {
         sender.sendMessage(text_.append(textComponent));
     }
