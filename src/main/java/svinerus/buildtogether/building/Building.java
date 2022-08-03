@@ -27,16 +27,20 @@ public class Building {
     public Building(String name, BuildingSchema buildingSchema) {
         this.name = name;
         this.buildingSchema = buildingSchema;
-        onEnable();
     }
 
     public void onEnable() {
-        this.tips = new BlockTips();
-        // todo if this.visible
-        show();
+        try {
+            this._onEnable();
+        } catch (Exception e) {
+            BuildTogether.instance.getLogger().warning("Failed to load building " + name + ". " + e);
+        }
     }
 
-    public void show() {
+    private void _onEnable() {
+        this.tips = new BlockTips();
+        // todo if this.visible
+        this.setBlockTips();
         this.checkLayerFinish();
     }
 
@@ -107,7 +111,8 @@ public class Building {
         BuildingFinishedEvent newEvent = new BuildingFinishedEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(newEvent);
 
-        BuildingsManager.instance.remove(name);
+        // todo set disabled
+//        BuildingsManager.instance.remove(name);
     }
 
 

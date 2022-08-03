@@ -24,6 +24,7 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
         var schema = Creator.Create(schematicName, location);
         var building = new Building(buildingName, schema);
         buildings.put(buildingName, building);
+        building.onEnable();
         return building;
     }
 
