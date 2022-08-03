@@ -11,6 +11,8 @@ import svinerus.buildtogether.events.LayerFinished;
 import svinerus.buildtogether.utils.Utils;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class Building {
     private final String name;
@@ -74,11 +76,18 @@ public class Building {
         var locationVec = Utils.toVector(location);
 
         var whereVec = activeLayer().blocks().keySet().stream()
-                .filter(l -> isBlockCorrect(l, location.getWorld()))
-                .min(Comparator.comparingDouble(locationVec::distance)).orElse(null);
+          .filter(l -> !isBlockCorrect(l, location.getWorld()))
+          .min(Comparator.comparingDouble(locationVec::distance)).orElse(null);
 
         if (whereVec == null) throw new IllegalArgumentException("No incorrect blocks");
         return Utils.toLocation(world(), whereVec);
+    }
+
+    // blocks in current layer that are incorrect
+    public List<Material> what() {
+        return activeLayer().blocks().entrySet().stream()
+          .filter(l -> !isBlockCorrect(l.getKey(), world()) && !l.getValue().isAir())
+          .map(Map.Entry::getValue).toList();
     }
 
     public double progress() {
