@@ -69,19 +69,20 @@ public class PlaceholderApi extends PlaceholderExpansion {
           BuildTogether.buildingsManager.getBuilding(p[1]);
 
         if (building == null) return "No such building";
+        var buildingCache = buildingsCache.get(building.getName());
 
         switch (p[0]) {
 
             case "progress":
-                return String.valueOf((int) (buildingsCache.get(building.getName()).progress() * 100));
+                return String.valueOf((int) (buildingCache.progress() * 100));
             case "need-blocks-count":
-                return String.valueOf(buildingsCache.get(building.getName()).needBlocksMap());
+                return String.valueOf(buildingCache.needBlocksMap());
             case "need-blocks-uniq-count":
-                return String.valueOf(buildingsCache.get(building.getName()).needBlocksUniqCount());
+                return String.valueOf(buildingCache.needBlocksUniqCount());
             case "need-blocks-map":
                 if (p.length != 4) return "bt_need-blocks-map_<buildingname>_<index>_<block|count>";
                 var index = Integer.parseInt(p[2]);
-                var blocksCount = buildingsCache.get(building.getName()).needBlocksMap().get(index);
+                var blocksCount = buildingCache.needBlocksMap().get(index);
                 var res = "block".equals(p[3]) ?
                   blocksLocalisation.localize(blocksCount.getKey().translationKey()) : blocksCount.getValue();
                 return String.valueOf(res);
@@ -89,12 +90,12 @@ public class PlaceholderApi extends PlaceholderExpansion {
 
             case "is-need-block-in-hand":
                 var handBlock = player.getInventory().getItemInMainHand().getType();
-                return buildingsCache.get(building.getName()).needBlocksSet().contains(handBlock) ? "yes" : "no";
+                return buildingCache.needBlocksSet().contains(handBlock) ? "yes" : "no";
 
             case "is-need-block-in-env":
                 var invBlocks = Arrays.stream(player.getInventory().getStorageContents())
                   .filter(Objects::nonNull).map(ItemStack::getType).collect(Collectors.toSet());
-                invBlocks.retainAll(buildingsCache.get(building.getName()).needBlocksSet());
+                invBlocks.retainAll(buildingCache.needBlocksSet());
                 return !invBlocks.isEmpty() ? "yes" : "no";
 
 
