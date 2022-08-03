@@ -4,6 +4,7 @@ main: svinerus.buildtogether.BuildTogether
 api-version: 1.19
 prefix: logprefix
 depend: [ WorldEdit ]
+softdepend: [PlaceholderAPI, EssentialsX]
 authors: [ authors ]
 description: description
 website: website
