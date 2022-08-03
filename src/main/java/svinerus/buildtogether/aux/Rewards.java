@@ -47,6 +47,8 @@ public class Rewards  implements Listener {
             scoreboard.addScoreboardPointsWorth(event, worth.intValue());
         }
 
+        PlaceholderApi.BuildingsCache.instance.invalidate(event.getBuilding().getName());
+
 
     }
 

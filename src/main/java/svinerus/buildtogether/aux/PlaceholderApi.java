@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class PlaceholderApi extends PlaceholderExpansion {
 
-    BuildingsCache buildingsCache = new BuildingsCache();
+    BuildingsCache buildingsCache = BuildingsCache.instance;
 
     @Override
     public String getAuthor() {
@@ -49,10 +49,9 @@ public class PlaceholderApi extends PlaceholderExpansion {
           BuildingsManager.instance.getBuilding(p[1]);
 
 
-
         switch (p[0]) {
             case "isinside":
-                return building != null ? "yes": "no";
+                return building != null ? "yes" : "no";
 
             case "needblockscount":
                 return String.valueOf(buildingsCache.get(building.getName()).needBlocksMap());
@@ -77,10 +76,14 @@ public class PlaceholderApi extends PlaceholderExpansion {
     }
 
     static class BuildingsCache {
+        public static BuildingsCache instance = new BuildingsCache();
         private final HashMap<String, BuildingCache> cache = new HashMap<>();
 
         public BuildingCache get(String buildingName) {
             return cache.computeIfAbsent(buildingName, k -> new BuildingCache(BuildingsManager.instance.getBuilding(buildingName)));
+        }
+        public BuildingCache invalidate(String buildingName) {
+            return cache.remove(buildingName);
         }
 
         static class BuildingCache {
@@ -119,7 +122,7 @@ public class PlaceholderApi extends PlaceholderExpansion {
                 return needBlocksCountMap;
             }
 
-            public void recalc() {
+            private void recalc() {
                 progress = building.progress();
                 var needBlocks = building.what();
                 needBlocksCount = needBlocks.size();
