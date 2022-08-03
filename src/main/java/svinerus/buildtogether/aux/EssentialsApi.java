@@ -25,5 +25,12 @@ public class EssentialsApi {
         return worth.getPrice(null, new ItemStack(mat));
     }
 
+    public void giveMoney(String player, BigDecimal amount) {
+        try {
+            essPlugin.getUser(player).giveMoney(amount);
+        } catch (MaxMoneyException | NullPointerException e) {
+            BuildTogether.instance.getLogger().warning("Could not give money to " + player + ": " + e.getMessage());
+        }
+    }
 
 }
