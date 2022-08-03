@@ -6,17 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.Building;
 
 public class BuildingFinishedEvent extends BuildTogetherEvent {
-    private static final HandlerList handlers = new HandlerList();
-
     private final Building building;
 
     public BuildingFinishedEvent(Building building) {
         this.building = building;
-    }
-
-
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
     }
 
     public Building getBuilding() {

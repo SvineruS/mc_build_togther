@@ -11,8 +11,6 @@ import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.building.Building;
 
 public class BlockPlacedEvent extends BuildTogetherEvent {
-    private static final HandlerList handlers = new HandlerList();
-
     private final Building building;
     private final BlockEvent blockEvent;
     private final BlockPlacement blockPlacement; // place or break
@@ -22,11 +20,6 @@ public class BlockPlacedEvent extends BuildTogetherEvent {
         this.blockEvent = blockEvent;
         this.blockPlacement = blockPlacement;
         getPlayer(); // implicit check for `blockEvent` type
-    }
-
-
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
     }
 
     public BlockEvent getBlockEvent() {
