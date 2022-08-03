@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import svinerus.buildtogether.aux.Rewards;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.utils.CommandListener;
@@ -27,6 +28,9 @@ public final class BuildTogether extends JavaPlugin {
         // register events and commands
         EventListener.register(this);
         CommandListener.register(this);
+
+        // register reward manager
+        Rewards.register(this);
 
         // create buildings manager
         HashMap<String, Building> building = loadBuildings();
