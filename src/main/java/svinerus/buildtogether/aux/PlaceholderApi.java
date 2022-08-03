@@ -4,6 +4,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
 
@@ -15,13 +17,19 @@ public class PlaceholderApi extends PlaceholderExpansion {
     BuildingsCache buildingsCache = BuildingsCache.instance;
 
     @Override
+    public boolean register() {
+        BuildTogether.instance.getLogger().info("Registering PlaceholderAPI expansion");
+        return super.register();
+    }
+
+    @Override
     public String getAuthor() {
         return "svinerus";
     }
 
     @Override
     public String getIdentifier() {
-        return "buildtogether";
+        return "bt";
     }
 
     @Override
@@ -39,26 +47,33 @@ public class PlaceholderApi extends PlaceholderExpansion {
         var p = PlaceholderAPI.setBracketPlaceholders(player, params).split("_");
 
         if (Objects.equals(p[0], "timemod")) {
-            if (p.length != 2) return "bt_timemod_<mod>";
-            return String.valueOf(System.currentTimeMillis() / 1000L % Integer.parseInt(p[1]));
+            if (p.length < 2) return "bt_timemod_<mod>_[seconds]";
+            var div = p.length == 3 ? Integer.parseInt(p[2]) : 1;
+            return String.valueOf(System.currentTimeMillis() / 1000L / div % Integer.parseInt(p[1]));
         }
 
-        if (p.length < 2) return "bt_needblocksmap_<buildingname>";
+
+        if ("isinside".equals(p[0]))
+            return BuildingsManager.instance.getBuilding(player.getLocation()) != null ? "yes" : "no";
+
+
+        if (p.length < 2) return "bt_<command>_<buildingname>";
         var building = "inside".equals(p[1]) ?
           BuildingsManager.instance.getBuilding(player.getLocation()) :
           BuildingsManager.instance.getBuilding(p[1]);
 
+        if (building == null) return "No such building";
 
         switch (p[0]) {
-            case "isinside":
-                return building != null ? "yes" : "no";
 
-            case "needblockscount":
+            case "progress":
+                return String.valueOf((int) (buildingsCache.get(building.getName()).progress() * 100));
+            case "need-blocks-count":
                 return String.valueOf(buildingsCache.get(building.getName()).needBlocksMap());
-            case "needblocksuniqcount":
+            case "need-blocks-uniq-count":
                 return String.valueOf(buildingsCache.get(building.getName()).needBlocksUniqCount());
-            case "needblocksmap":
-                if (p.length != 4) return "bt_needblocksmap_<buildingname>_<index>_<block|count>";
+            case "need-blocks-map":
+                if (p.length != 4) return "bt_need-blocks-map_<buildingname>_<index>_<block|count>";
                 var index = Integer.parseInt(p[2]);
                 var blocksCount = buildingsCache.get(building.getName()).needBlocksMap().get(index);
                 var res = "block".equals(p[3]) ?
@@ -66,9 +81,16 @@ public class PlaceholderApi extends PlaceholderExpansion {
                 return String.valueOf(res);
 
 
-            case "isneedhandblock":
+            case "is-need-block-in-hand":
                 var handBlock = player.getInventory().getItemInMainHand().getType();
                 return buildingsCache.get(building.getName()).needBlocksSet().contains(handBlock) ? "yes" : "no";
+
+            case "is-need-block-in-env":
+                var invBlocks = Arrays.stream(player.getInventory().getStorageContents())
+                  .filter(Objects::nonNull).map(ItemStack::getType).collect(Collectors.toSet());
+                invBlocks.retainAll(buildingsCache.get(building.getName()).needBlocksSet());
+                return !invBlocks.isEmpty() ? "yes" : "no";
+
 
         }
 
@@ -82,8 +104,9 @@ public class PlaceholderApi extends PlaceholderExpansion {
         public BuildingCache get(String buildingName) {
             return cache.computeIfAbsent(buildingName, k -> new BuildingCache(BuildingsManager.instance.getBuilding(buildingName)));
         }
-        public BuildingCache invalidate(String buildingName) {
-            return cache.remove(buildingName);
+
+        public void invalidate(String buildingName) {
+            cache.remove(buildingName);
         }
 
         static class BuildingCache {
