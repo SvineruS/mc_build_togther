@@ -13,8 +13,8 @@ public class Scoreboard {
     }
 
     public void addScoreboardPoints(BlockPlacedEvent event) {
-        addScore(getObjective("worth_all_buildings"), event.getPlayer(), 1);
-        addScore(getObjective("worth_" + event.getBuilding().getName()), event.getPlayer(), 1);
+        addScore(getObjective("all_buildings"), event.getPlayer(), 1);
+        addScore(getObjective("" + event.getBuilding().getName()), event.getPlayer(), 1);
     }
 
     public void addScoreboardPointsWorth(BlockPlacedEvent event, int worth) {
