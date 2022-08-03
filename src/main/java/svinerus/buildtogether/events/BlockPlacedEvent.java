@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.building.Building;
 
-public class BlockPlacedEvent extends Event {
+public class BlockPlacedEvent extends BuildTogetherEvent {
     private static final HandlerList handlers = new HandlerList();
 
     private final Building building;

@@ -5,7 +5,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.building.Building;
 
-public class BuildingFinishedEvent extends Event {
+public class BuildingFinishedEvent extends BuildTogetherEvent {
     private static final HandlerList handlers = new HandlerList();
 
     private final Building building;
