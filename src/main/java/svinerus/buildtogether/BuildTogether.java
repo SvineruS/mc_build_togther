@@ -7,10 +7,12 @@ import svinerus.buildtogether.aux.PlaceholderApi;
 import svinerus.buildtogether.aux.Rewards;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
-import svinerus.buildtogether.utils.CommandListener;
+import svinerus.buildtogether.utils.Chat;
+import svinerus.buildtogether.utils.listeners.CommandListener;
+import svinerus.buildtogether.utils.listeners.EventListener;
 import svinerus.buildtogether.utils.storage.Buildings;
 import svinerus.buildtogether.utils.storage.ExtractingFiles;
-import svinerus.buildtogether.utils.EventListener;
+import svinerus.buildtogether.utils.Localization;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,11 +23,21 @@ public final class BuildTogether extends JavaPlugin {
 
     public static WorldEditPlugin WEPlugin;
     public static BuildingsManager buildingsManager;
+    public static Chat chat;
 
     @Override
     public void onEnable() {
         instance = this;
         this.saveDefaultConfig();
+
+        // extract files from jar if not exist
+        ExtractingFiles.ensureFilesExist();
+
+
+        // load locale
+        var locale = this.getConfig().getString("locale");
+        var localization = new Localization("locales", locale);
+        chat = new Chat(localization);
 
         // load required WorldEdit plugin
         WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
@@ -34,20 +46,19 @@ public final class BuildTogether extends JavaPlugin {
         HashMap<String, Building> building = Buildings.loadBuildings();
         buildingsManager = new BuildingsManager(building);
 
-        // extract files from jar if not exist
-        ExtractingFiles.ensureFilesExist();
 
         // register events and commands
         EventListener.register(this);
         CommandListener.register(this);
 
         // register reward manager
-        Rewards.register(this);
+        if (this.getConfig().getBoolean("rewards.enabled"))
+            Rewards.register(this);
 
         // Register PlaceholderAPI expansion
         // https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/PlaceholderExpansion#register-the-expansion
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
-            new PlaceholderApi().register();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+            new PlaceholderApi(locale).register();
     }
 
 

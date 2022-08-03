@@ -1,4 +1,4 @@
-package svinerus.buildtogether.utils;
+package svinerus.buildtogether.utils.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.events.BlockPlacedEvent;
+import svinerus.buildtogether.utils.Utils;
 
 public class EventListener implements Listener {
 

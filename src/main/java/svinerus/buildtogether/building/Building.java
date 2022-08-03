@@ -34,7 +34,7 @@ public class Building {
         try {
             this._onEnable();
         } catch (Exception e) {
-            BuildTogether.instance.getLogger().warning("Failed to load building " + name + ". " + e);
+            Utils.exception(e, "Failed to load building " + name);
         }
     }
 

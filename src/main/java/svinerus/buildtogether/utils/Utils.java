@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Utils {
 
@@ -51,6 +52,13 @@ public class Utils {
         return pathList;
     }
 
+    public static Logger logger() {
+        return BuildTogether.instance.getLogger();
+    }
+    public static void exception(Exception e, String msg) {
+        logger().warning(msg + ": " + e.getMessage());
+        e.printStackTrace(System.out);
+    }
 
     public static BlockVector3 toVector(Location location) {
         return BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());

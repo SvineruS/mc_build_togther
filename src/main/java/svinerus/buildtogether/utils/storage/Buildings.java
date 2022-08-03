@@ -21,8 +21,7 @@ public class Buildings {
         try {
             allFiles = Utils.allFiles(getBuildingsPath());
         } catch (IOException e) {
-            BuildTogether.instance.getLogger().warning("Failed to scan files in " + getBuildingsPath());
-            e.printStackTrace(System.out);
+            Utils.exception(e,"Failed to scan files in " + getBuildingsPath());
         }
 
         for (var file : allFiles) {
@@ -43,8 +42,7 @@ public class Buildings {
             var fileReader = Files.newBufferedReader(filePath);
             return StorageUtils.gson.fromJson(fileReader, Building.class);
         } catch (IOException e) {
-            BuildTogether.instance.getLogger().warning("Failed to load building from " + filePath);
-            e.printStackTrace(System.out);
+            Utils.exception(e, "Failed to load building from " + filePath);
         }
         return null;
     }
@@ -58,8 +56,7 @@ public class Buildings {
             StorageUtils.createPath(filePath);
             Files.write(filePath, StorageUtils.gson.toJson(building).getBytes());
         } catch (IOException e) {
-            BuildTogether.instance.getLogger().warning("Failed to save config to " + filePath);
-            e.printStackTrace(System.out);
+            Utils.exception(e,"Failed to save config to " + filePath);
         }
     }
 

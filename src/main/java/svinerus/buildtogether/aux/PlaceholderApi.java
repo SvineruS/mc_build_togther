@@ -7,7 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.Building;
-import svinerus.buildtogether.building.BuildingsManager;
+import svinerus.buildtogether.utils.Utils;
+import svinerus.buildtogether.utils.Localization;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,10 +16,15 @@ import java.util.stream.Collectors;
 public class PlaceholderApi extends PlaceholderExpansion {
 
     BuildingsCache buildingsCache = BuildingsCache.instance;
+    Localization blocksLocalisation;
+
+    public PlaceholderApi(String locale) {
+        this.blocksLocalisation = new Localization("locales/blocks", locale);
+    }
 
     @Override
     public boolean register() {
-        BuildTogether.instance.getLogger().info("Registering PlaceholderAPI expansion");
+        Utils.logger().info("Registering PlaceholderAPI expansion");
         return super.register();
     }
 
@@ -77,7 +83,7 @@ public class PlaceholderApi extends PlaceholderExpansion {
                 var index = Integer.parseInt(p[2]);
                 var blocksCount = buildingsCache.get(building.getName()).needBlocksMap().get(index);
                 var res = "block".equals(p[3]) ?
-                  blocksCount.getKey() : blocksCount.getValue();
+                  blocksLocalisation.localize(blocksCount.getKey().translationKey()) : blocksCount.getValue();
                 return String.valueOf(res);
 
 

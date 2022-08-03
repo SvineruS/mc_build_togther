@@ -5,14 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.events.BlockPlacedEvent;
+import svinerus.buildtogether.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 
-public class Rewards  implements Listener {
+public class Rewards implements Listener {
 
 
     @Nullable
@@ -22,7 +22,7 @@ public class Rewards  implements Listener {
     public Rewards() {
         essApi = null;
         var essPlugin = (IEssentials) Bukkit.getPluginManager().getPlugin("EssentialsX");
-        if (essPlugin == null) BuildTogether.instance.getLogger().warning("Working without EssentialsX");
+        if (essPlugin == null) Utils.logger().warning("Working without EssentialsX");
         else essApi = new EssentialsApi(essPlugin);
 
         scoreboard = new Scoreboard();
@@ -39,6 +39,7 @@ public class Rewards  implements Listener {
 
         scoreboard.addScoreboardPoints(event);
 
+        // if essentials is here we can do something with block worth
         if (essApi != null) {
             var worth = essApi.getWorth(event.getBlockEvent().getBlock().getType());
             if (worth == null) worth = BigDecimal.valueOf(1);  // todo
@@ -47,7 +48,9 @@ public class Rewards  implements Listener {
             scoreboard.addScoreboardPointsWorth(event, worth.intValue());
         }
 
-        PlaceholderApi.BuildingsCache.instance.invalidate(event.getBuilding().getName());
+        // all cache value updated, so invalidate the cache
+        if (PlaceholderApi.BuildingsCache.instance != null)
+            PlaceholderApi.BuildingsCache.instance.invalidate(event.getBuilding().getName());
 
 
     }

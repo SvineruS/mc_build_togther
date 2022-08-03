@@ -1,4 +1,4 @@
-package svinerus.buildtogether.utils;
+package svinerus.buildtogether.utils.listeners;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -14,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.BuildTogether;
+import svinerus.buildtogether.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             }
         } catch (Exception e) {
             e.printStackTrace(System.out);
-            sendPluginMsg(sender, Component.text(e.toString()).color(NamedTextColor.RED));
+            BuildTogether.chat.sendMsg(sender, Component.text(e.toString()).color(NamedTextColor.RED));
         }
         return true;
     }
@@ -80,14 +81,14 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String schematicName = args[2];
 
         var building = BuildTogether.buildingsManager.create(buildingName, schematicName, ((Entity) sender).getLocation());
-        sendPluginMsg(sender,
+        BuildTogether.chat.sendMsg(sender,
           Component.text("blocks to build:").color(NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
         );
-        sendPluginMsg(sender,
+        BuildTogether.chat.sendMsg(sender,
           Component.text("blocks to remove:").color(NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getWorldBlocks())));
-        sendPluginMsg(sender, "building created!");
+        BuildTogether.chat.sendMsg(sender, "building created!");
     }
 
     void remove(CommandSender sender, String[] args) throws Exception {
@@ -95,7 +96,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         String buildingName = args[1];
         BuildTogether.buildingsManager.remove(buildingName);
-        sendPluginMsg(sender, "building removed!");
+        BuildTogether.chat.sendMsg(sender, "building removed!");
     }
 
     void list(CommandSender sender, String[] args) {
@@ -103,7 +104,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         var namesText = names.isEmpty() ? "Empty" :
           String.join(",", names.toArray(new String[0]));
 
-        sendPluginMsg(sender, namesText);
+        BuildTogether.chat.sendMsg(sender, namesText);
     }
 
 
@@ -118,7 +119,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             // todo check perms
             ((Entity) sender).teleport(where);
         } else {
-            sendPluginMsg(sender, Component.text("Nearest block is ", NamedTextColor.WHITE).append(
+            BuildTogether.chat.sendMsg(sender, Component.text("Nearest block is ", NamedTextColor.WHITE).append(
               Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]")
                 .color(NamedTextColor.GREEN)
                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
@@ -160,16 +161,6 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             .append(Component.text(e.getValue())).color(NamedTextColor.WHITE));
 
         return result;
-    }
-
-    private static final TextComponent text_ = Component.text("[BuildTogether] ").color(NamedTextColor.GOLD);
-
-    private void sendPluginMsg(CommandSender sender, String text) {
-        sendPluginMsg(sender, Component.text(text).color(NamedTextColor.WHITE));
-    }
-
-    private void sendPluginMsg(CommandSender sender, TextComponent textComponent) {
-        sender.sendMessage(text_.append(textComponent));
     }
 
 }

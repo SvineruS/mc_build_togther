@@ -5,7 +5,7 @@ import com.earth2me.essentials.Worth;
 import net.ess3.api.MaxMoneyException;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import svinerus.buildtogether.BuildTogether;
+import svinerus.buildtogether.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -29,7 +29,7 @@ public class EssentialsApi {
         try {
             essPlugin.getUser(player).giveMoney(amount);
         } catch (MaxMoneyException | NullPointerException e) {
-            BuildTogether.instance.getLogger().warning("Could not give money to " + player + ": " + e.getMessage());
+            Utils.exception(e,"Could not give money to " + player);
         }
     }
 
