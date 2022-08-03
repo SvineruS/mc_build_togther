@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import svinerus.buildtogether.aux.PlaceholderApi;
 import svinerus.buildtogether.aux.Rewards;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
@@ -23,7 +24,12 @@ public final class BuildTogether extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit"); // init world edit
+        WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
+
+        // create buildings manager
+        HashMap<String, Building> building = loadBuildings();
+        BuildingsManager.instance = new BuildingsManager(building);
+
 
         // register events and commands
         EventListener.register(this);
@@ -32,9 +38,10 @@ public final class BuildTogether extends JavaPlugin {
         // register reward manager
         Rewards.register(this);
 
-        // create buildings manager
-        HashMap<String, Building> building = loadBuildings();
-        BuildingsManager.instance = new BuildingsManager(building);
+        // Register PlaceholderAPI expansion
+        // https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/PlaceholderExpansion#register-the-expansion
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+            new PlaceholderApi().register();
     }
 
 
