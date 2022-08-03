@@ -42,10 +42,8 @@ public class BlockPlacedEvent extends Event {
     }
 
     public Player getPlayer() {
-        return switch (blockEvent) {
-            case BlockPlaceEvent pl -> pl.getPlayer();
-            case BlockBreakEvent pl -> pl.getPlayer();
-            default -> throw new IllegalStateException("Unexpected value: " + blockEvent);
-        };
+        if (blockEvent instanceof BlockPlaceEvent) return ((BlockPlaceEvent) blockEvent).getPlayer();
+        if (blockEvent instanceof BlockBreakEvent) return ((BlockBreakEvent) blockEvent).getPlayer();
+        throw new IllegalStateException("Unexpected value: " + blockEvent);
     }
 }
