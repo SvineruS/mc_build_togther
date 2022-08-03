@@ -13,7 +13,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import svinerus.buildtogether.building.BuildingsManager;
+import svinerus.buildtogether.BuildTogether;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String buildingName = args[1];
         String schematicName = args[2];
 
-        var building = BuildingsManager.instance.create(buildingName, schematicName, ((Entity) sender).getLocation());
+        var building = BuildTogether.buildingsManager.create(buildingName, schematicName, ((Entity) sender).getLocation());
         sendPluginMsg(sender,
           Component.text("blocks to build:").color(NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
@@ -94,7 +94,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         if (args.length != 2) throw new Exception("Wrong number of arguments");
 
         String buildingName = args[1];
-        BuildingsManager.instance.remove(buildingName);
+        BuildTogether.buildingsManager.remove(buildingName);
         sendPluginMsg(sender, "building removed!");
     }
 
@@ -113,7 +113,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         String buildingName = args[1];
 
-        var where = BuildingsManager.instance.getBuilding(buildingName).where(((Entity) sender).getLocation());
+        var where = BuildTogether.buildingsManager.getBuilding(buildingName).where(((Entity) sender).getLocation());
         if (args.length >= 3 && args[2].equals("-t")) {
             // todo check perms
             ((Entity) sender).teleport(where);
@@ -128,7 +128,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     }
 
     static List<String> buildingNames() {
-        return BuildingsManager.instance.getNames();
+        return BuildTogether.buildingsManager.getNames();
     }
 
     static List<String> schematicNames() {

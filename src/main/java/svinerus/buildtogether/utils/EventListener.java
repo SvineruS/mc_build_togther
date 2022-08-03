@@ -9,8 +9,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.BlockPlacement;
-import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.events.BlockPlacedEvent;
 
 public class EventListener implements Listener {
@@ -36,7 +36,7 @@ public class EventListener implements Listener {
     // cancel the event if false returned
     boolean onChangeBlock(BlockEvent event, Material newMat) {
         var loc = event.getBlock().getLocation();
-        var building = BuildingsManager.instance.getBuilding(loc);
+        var building = BuildTogether.buildingsManager.getBuilding(loc);
         if (building == null) return false;
 
         var blockPlacement = building.blockPlaced(loc, newMat);

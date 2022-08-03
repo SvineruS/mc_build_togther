@@ -54,13 +54,13 @@ public class PlaceholderApi extends PlaceholderExpansion {
 
 
         if ("isinside".equals(p[0]))
-            return BuildingsManager.instance.getBuilding(player.getLocation()) != null ? "yes" : "no";
+            return BuildTogether.buildingsManager.getBuilding(player.getLocation()) != null ? "yes" : "no";
 
 
         if (p.length < 2) return "bt_<command>_<buildingname>";
         var building = "inside".equals(p[1]) ?
-          BuildingsManager.instance.getBuilding(player.getLocation()) :
-          BuildingsManager.instance.getBuilding(p[1]);
+          BuildTogether.buildingsManager.getBuilding(player.getLocation()) :
+          BuildTogether.buildingsManager.getBuilding(p[1]);
 
         if (building == null) return "No such building";
 
@@ -102,7 +102,7 @@ public class PlaceholderApi extends PlaceholderExpansion {
         private final HashMap<String, BuildingCache> cache = new HashMap<>();
 
         public BuildingCache get(String buildingName) {
-            return cache.computeIfAbsent(buildingName, k -> new BuildingCache(BuildingsManager.instance.getBuilding(buildingName)));
+            return cache.computeIfAbsent(buildingName, k -> new BuildingCache(BuildTogether.buildingsManager.getBuilding(buildingName)));
         }
 
         public void invalidate(String buildingName) {

@@ -9,6 +9,7 @@ import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.events.BuildingFinishedEvent;
 import svinerus.buildtogether.events.LayerFinishedEvent;
 import svinerus.buildtogether.utils.Utils;
+import svinerus.buildtogether.utils.storage.Buildings;
 
 import java.util.Comparator;
 import java.util.List;
@@ -66,6 +67,7 @@ public class Building {
 
     public void shutdown() {
         if (tips != null) tips.hideAll();
+        Buildings.saveBuilding(this);
     }
 
     public boolean isInside(Location location) {
@@ -101,9 +103,16 @@ public class Building {
 
     private void onCorrectBlockPlacement() {
         if (!checkLayerFinish()) return;
+        onLayerFinished();
+    }
 
+    private void onLayerFinished() {
+        // spawn firework
         var loc = Utils.toLocation(world(), buildingSchema.region.getCenter().toBlockPoint());
         Utils.spawnFirework(loc);
+
+        // save building state
+        Buildings.saveBuilding(this);
     }
 
 

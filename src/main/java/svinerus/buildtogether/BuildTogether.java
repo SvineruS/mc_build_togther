@@ -3,7 +3,6 @@ package svinerus.buildtogether;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.aux.PlaceholderApi;
 import svinerus.buildtogether.aux.Rewards;
 import svinerus.buildtogether.building.Building;
@@ -21,6 +20,7 @@ public final class BuildTogether extends JavaPlugin {
     public static BuildTogether instance;
 
     public static WorldEditPlugin WEPlugin;
+    public static BuildingsManager buildingsManager;
 
     @Override
     public void onEnable() {
@@ -31,8 +31,8 @@ public final class BuildTogether extends JavaPlugin {
         WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
 
         // create buildings manager
-        HashMap<String, Building> building = Buildings.loadBuildingsSafe();
-        BuildingsManager.instance = new BuildingsManager(building);
+        HashMap<String, Building> building = Buildings.loadBuildings();
+        buildingsManager = new BuildingsManager(building);
 
         // extract files from jar if not exist
         ExtractingFiles.ensureFilesExist();
@@ -54,7 +54,8 @@ public final class BuildTogether extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            BuildingsManager.instance.shutdown();
+            buildingsManager.shutdown();
+            buildingsManager = null;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

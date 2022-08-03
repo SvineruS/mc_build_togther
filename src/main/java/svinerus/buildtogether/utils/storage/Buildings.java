@@ -8,48 +8,65 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 
 public class Buildings {
 
 
-    public static HashMap<String, Building> loadBuildingsSafe() {
-        HashMap<String, Building> building = new HashMap<>();
-        try {
-            building = loadBuildings();
-        } catch (java.nio.file.NoSuchFileException ignored) {
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-            BuildTogether.instance.getLogger().warning("Failed to load config");
-        }
-        return building;
-    }
+    // load
 
-    public static HashMap<String, Building> loadBuildings() throws IOException {
+    public static HashMap<String, Building> loadBuildings() {
         var buildings = new HashMap<String, Building>();
-        for (var file : Utils.allFiles(getBuildingsPath())) {
+        List<Path> allFiles = null;
+        try {
+            allFiles = Utils.allFiles(getBuildingsPath());
+        } catch (IOException e) {
+            BuildTogether.instance.getLogger().warning("Failed to scan files in " + getBuildingsPath());
+            e.printStackTrace(System.out);
+        }
+
+        for (var file : allFiles) {
             var building = loadBuilding(file);
-            buildings.put(building.getName(), building);
+            if (building != null)
+                buildings.put(building.getName(), building);
         }
         return buildings;
     }
 
-    static Building loadBuilding(Path filePath) throws IOException {
-        var fileReader = Files.newBufferedReader(filePath);
-        return StorageUtils.gson.fromJson(fileReader, Building.class);
+
+    public static Building loadBuilding(String buildingName) {
+        return loadBuilding(getBuildingPath(buildingName));
+    }
+
+    public static Building loadBuilding(Path filePath) {
+        try {
+            var fileReader = Files.newBufferedReader(filePath);
+            return StorageUtils.gson.fromJson(fileReader, Building.class);
+        } catch (IOException e) {
+            BuildTogether.instance.getLogger().warning("Failed to load building from " + filePath);
+            e.printStackTrace(System.out);
+        }
+        return null;
     }
 
 
+    // save
 
-    public static void saveBuildings(HashMap<String, Building> buildings) throws IOException {
-        StorageUtils.createPath(getBuildingsPath());
-        for (var building : buildings.values())
-            saveBuilding(building);
+    public static void saveBuilding(Building building) {
+        var filePath = getBuildingPath(building.getName());
+        try {
+            StorageUtils.createPath(filePath);
+            Files.write(filePath, StorageUtils.gson.toJson(building).getBytes());
+        } catch (IOException e) {
+            BuildTogether.instance.getLogger().warning("Failed to save config to " + filePath);
+            e.printStackTrace(System.out);
+        }
     }
 
+    // utils
 
-    static void saveBuilding(Building building) throws IOException {
-        var path = getBuildingsPath().resolve(building.getName() + ".json");
-        Files.write(path, StorageUtils.gson.toJson(building).getBytes());
+    private static Path getBuildingPath(String buildingName) {
+        return getBuildingsPath().resolve(buildingName + ".json");
     }
 
     private static Path getBuildingsPath() {

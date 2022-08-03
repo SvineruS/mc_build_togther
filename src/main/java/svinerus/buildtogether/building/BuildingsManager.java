@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public record BuildingsManager(HashMap<String, Building> buildings) {
-    public static BuildingsManager instance;
-
     public BuildingsManager(HashMap<String, Building> buildings) {
         this.buildings = buildings;
         buildings.values().forEach(Building::onEnable);
@@ -20,6 +18,9 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
     public Building create(String buildingName, String schematicName, Location location) throws IOException, IllegalArgumentException {
         if (buildings.containsKey(buildingName))
             throw new IllegalArgumentException("Building with name " + buildingName + " already exists");
+        if (Buildings.loadBuilding(buildingName) != null)
+            throw new IllegalArgumentException("Building with name " + buildingName + " already exists (but not loaded)");
+
 
         var schema = Creator.Create(schematicName, location);
         var building = new Building(buildingName, schema);
@@ -38,7 +39,6 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
 
     public void shutdown() throws IOException {
         buildings.values().forEach(Building::shutdown);
-        Buildings.saveBuildings(BuildingsManager.instance.buildings);
     }
 
     public Building getBuilding(Location location) {
