@@ -64,7 +64,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
                 if (args.length == 2) return new ArrayList<>(List.of("[name_of_new_building]"));
                 if (args.length == 3) return schematicNames();
             }
-            case "remove" -> {
+            case "list", "remove" -> {
                 if (args.length == 2) return buildingNames();
             }
             case "where" -> {
@@ -85,13 +85,13 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         var building = BuildTogether.buildingsManager.create(buildingName, schematicName, ((Entity) sender).getLocation());
         BuildTogether.chat.sendMsg(sender,
-          Component.text("blocks to build:").color(NamedTextColor.WHITE)
+          Component.text("create.blocks_add_list", NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
         );
         BuildTogether.chat.sendMsg(sender,
-          Component.text("blocks to remove:").color(NamedTextColor.WHITE)
+          Component.text("create.blocks_remove_list", NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getWorldBlocks())));
-        BuildTogether.chat.sendMsg(sender, "building created!");
+        BuildTogether.chat.sendMsg(sender, "create.success");
     }
 
     void remove(CommandSender sender, String[] args) throws Exception {
@@ -100,13 +100,13 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         String buildingName = args[1];
         BuildTogether.buildingsManager.remove(buildingName);
-        BuildTogether.chat.sendMsg(sender, "building removed!");
+        BuildTogether.chat.sendMsg(sender, "remove.success");
     }
 
     void list(CommandSender sender, String[] args) throws Exception {
         requirePerms(sender, "list");
         var names = buildingNames();
-        var namesText = names.isEmpty() ? "Empty" :
+        var namesText = names.isEmpty() ? "list.empty" :
           String.join(",", names.toArray(new String[0]));
 
         BuildTogether.chat.sendMsg(sender, namesText);
@@ -125,9 +125,8 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             requirePerms(sender, "where.tp");
             ((Entity) sender).teleport(where);
         } else {
-            BuildTogether.chat.sendMsg(sender, Component.text("Nearest block is ", NamedTextColor.WHITE).append(
-              Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]")
-                .color(NamedTextColor.GREEN)
+            BuildTogether.chat.sendMsg(sender, Component.text("where.nearest_block ", NamedTextColor.WHITE).append(
+              Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]", NamedTextColor.GREEN)
                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/bt " + String.join(" ", args) + " -t"))
             ));
@@ -162,9 +161,9 @@ public class CommandListener implements CommandExecutor, TabCompleter {
           .sorted(Map.Entry.comparingByValue())
           .forEach(e -> result
             .append(Component.text("\n"))
-            .append(Component.translatable(e.getKey()).color(NamedTextColor.BLUE))
-            .append(Component.text(": ").color(NamedTextColor.GRAY))
-            .append(Component.text(e.getValue())).color(NamedTextColor.WHITE));
+            .append(Component.translatable(e.getKey(), NamedTextColor.BLUE))
+            .append(Component.text(": ", NamedTextColor.GRAY))
+            .append(Component.text(e.getValue(), NamedTextColor.WHITE)));
 
         return result;
     }
