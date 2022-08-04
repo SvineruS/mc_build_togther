@@ -18,6 +18,8 @@ public class PlaceholderApi extends PlaceholderExpansion {
     BuildingsCache buildingsCache = BuildingsCache.instance;
     Localization blocksLocalisation;
 
+    private int blockAutoIndex = 0;
+
     public PlaceholderApi(String locale) {
         this.blocksLocalisation = new Localization("locales/blocks", locale);
     }
@@ -85,6 +87,19 @@ public class PlaceholderApi extends PlaceholderExpansion {
                 var blocksCount = buildingCache.needBlocksMap().get(index);
                 var res = "block".equals(p[3]) ?
                   blocksLocalisation.localize(blocksCount.getKey().translationKey()) : blocksCount.getValue();
+                return String.valueOf(res);
+
+            case "need-blocks-map-auto":
+                if (p.length != 3) return "bt_need-blocks-map_<buildingname>_<block|count>";
+                if ("count".equals(p[2])){
+                    blockAutoIndex++;
+                }
+                if (blockAutoIndex > buildingCache.needBlocksUniqCount()) {
+                    blockAutoIndex = 0;
+                }
+                blocksCount = buildingCache.needBlocksMap().get(blockAutoIndex);
+                res = "block".equals(p[2]) ?
+                        blocksLocalisation.localize(blocksCount.getKey().translationKey()) : blocksCount.getValue();
                 return String.valueOf(res);
 
 
