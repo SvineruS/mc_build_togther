@@ -18,6 +18,7 @@ import svinerus.buildtogether.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,9 +55,10 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (args.length <= 1) return new ArrayList<>(List.of(
-          "create", "remove", "where", "list"
-        ));
+        if (args.length <= 1) {
+            return Arrays.stream(new String[]{"create", "remove", "where", "list"})
+              .filter(e -> havePerms(sender, e)).toList();
+        }
         switch (args[0]) {
             case "create" -> {
                 if (args.length == 2) return new ArrayList<>(List.of("[name_of_new_building]"));
@@ -74,6 +76,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     }
 
     void create(CommandSender sender, String[] args) throws Exception {
+        requirePerms(sender, "create");
         if (args.length != 3) throw new Exception("Wrong number of arguments");
         if (!(sender instanceof Entity)) throw new Exception("Only entity can use this command");
 
@@ -92,6 +95,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     }
 
     void remove(CommandSender sender, String[] args) throws Exception {
+        requirePerms(sender, "remove");
         if (args.length != 2) throw new Exception("Wrong number of arguments");
 
         String buildingName = args[1];
@@ -99,7 +103,8 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         BuildTogether.chat.sendMsg(sender, "building removed!");
     }
 
-    void list(CommandSender sender, String[] args) {
+    void list(CommandSender sender, String[] args) throws Exception {
+        requirePerms(sender, "list");
         var names = buildingNames();
         var namesText = names.isEmpty() ? "Empty" :
           String.join(",", names.toArray(new String[0]));
@@ -109,6 +114,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
 
     void where(CommandSender sender, String[] args) throws Exception {
+        requirePerms(sender, "where");
         if (args.length < 2) throw new Exception("Wrong number of arguments");
         if (!(sender instanceof Entity)) throw new Exception("Only entity can use this command");
 
@@ -116,7 +122,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         var where = BuildTogether.buildingsManager.getBuilding(buildingName).where(((Entity) sender).getLocation());
         if (args.length >= 3 && args[2].equals("-t")) {
-            // todo check perms
+            requirePerms(sender, "where.tp");
             ((Entity) sender).teleport(where);
         } else {
             BuildTogether.chat.sendMsg(sender, Component.text("Nearest block is ", NamedTextColor.WHITE).append(
@@ -161,6 +167,14 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             .append(Component.text(e.getValue())).color(NamedTextColor.WHITE));
 
         return result;
+    }
+
+    private boolean havePerms(CommandSender sender, String perm) {
+        return sender.hasPermission("buildtogether."+perm) || sender.isOp();
+    }
+
+    private void requirePerms(CommandSender sender, String perm) throws Exception {
+        if (!havePerms(sender, perm)) throw new Exception("no_perms");
     }
 
 }
