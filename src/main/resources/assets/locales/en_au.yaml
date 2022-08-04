@@ -1,1 +1,3 @@
 test: test
+create.success: Create successful
+remove.success: Remove successful
