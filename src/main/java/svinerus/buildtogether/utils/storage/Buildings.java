@@ -1,6 +1,5 @@
 package svinerus.buildtogether.utils.storage;
 
-import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.utils.Utils;
 

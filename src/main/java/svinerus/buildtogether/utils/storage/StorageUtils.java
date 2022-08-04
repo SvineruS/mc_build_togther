@@ -33,7 +33,7 @@ public class StorageUtils {
     public static HashMap<String, String> readYamlToMap(Path path) throws IOException, InvalidConfigurationException {
         var res = new HashMap<String, String>();
         var cfg = readYaml(path).getValues(false);
-        cfg.keySet().forEach(key -> res.put(key, (String) cfg.get(key)));
+        cfg.keySet().forEach(key -> res.put(key, cfg.get(key).toString()));
         return res;
     }
     static YamlConfiguration readYaml(Path path) throws IOException, InvalidConfigurationException {

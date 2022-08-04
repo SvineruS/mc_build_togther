@@ -3,8 +3,6 @@ package svinerus.buildtogether.utils;
 
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.configuration.InvalidConfigurationException;
-import svinerus.buildtogether.BuildTogether;
-import svinerus.buildtogether.utils.Utils;
 import svinerus.buildtogether.utils.storage.StorageUtils;
 
 import java.io.IOException;
@@ -24,7 +22,7 @@ public class Localization {
     }
 
     private HashMap<String, String> loadLocaleSafe(String path, String localeName) {
-        var filePath = StorageUtils.getPluginPath().resolve(path).resolve(localeName + ".json");
+        var filePath = StorageUtils.getPluginPath().resolve(path).resolve(localeName + ".yaml");
         try {
             return StorageUtils.readYamlToMap(filePath);
         } catch (IOException | InvalidConfigurationException e) {
