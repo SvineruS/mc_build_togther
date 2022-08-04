@@ -27,7 +27,7 @@ def main(version=None, locale=None, save=False):
 
     lang_file = json.load(lang_path.open())
 
-    blocks = {key.removeprefix('block.minecraft.').upper(): block
+    blocks = {key: block
               for key, block in lang_file.items()
               if key.startswith('block.minecraft.') and key.count('.') == 2}
 
