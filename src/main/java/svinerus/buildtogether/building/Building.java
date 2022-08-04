@@ -71,9 +71,8 @@ public class Building {
     }
 
     public boolean isInside(Location location) {
-        // todo check using region
         var locVec = Utils.toVector(location);
-        return activeLayer().blocks().containsKey(locVec);
+        return locVec.containedWithin(buildingSchema.region.getMinimumPoint(), buildingSchema.region.getMaximumPoint());
     }
 
     // find the closest incorrect block to this location
