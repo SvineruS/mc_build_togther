@@ -48,6 +48,9 @@ public class Building {
 
     public BlockPlacement blockPlaced(Location loc, Material newMat) {
         var locVec = Utils.toVector(loc);
+        if (!isInsideActiveLayer(locVec))
+            return BlockPlacement.OUTSIDE_LAYER;
+
 
         if (isBlockCorrect(locVec, newMat)) {
             tips.hide(loc);
@@ -171,6 +174,10 @@ public class Building {
     // is passed block equals block from schema
     private boolean isBlockCorrect(BlockVector3 location, Material material) {
         return activeLayer().blocks().get(location) == material;
+    }
+
+    private boolean isInsideActiveLayer(BlockVector3 location) {
+        return activeLayer().blocks().containsKey(location);
     }
 
     private BuildingSchema.Layer activeLayer() {

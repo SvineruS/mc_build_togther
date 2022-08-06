@@ -34,7 +34,7 @@ public class EventListener implements Listener {
     }
 
 
-    // cancel the event if false returned
+    // cancel the event if true returned
     boolean onChangeBlock(BlockEvent event, Material newMat) {
         var loc = event.getBlock().getLocation();
         var building = BuildTogether.buildingsManager.getBuilding(loc);
@@ -45,12 +45,12 @@ public class EventListener implements Listener {
         BlockPlacedEvent newEvent = new BlockPlacedEvent(building, event, blockPlacement);
         Bukkit.getServer().getPluginManager().callEvent(newEvent);
 
-        if (blockPlacement == BlockPlacement.INCORRECT) {
-            Utils.spawnParticles(loc, Particle.ELECTRIC_SPARK);
-            return true;
-        } else {
+        if (blockPlacement.isCorrect()) {
             Utils.spawnParticles(loc, Particle.HEART);
             return false;
+        } else {
+            Utils.spawnParticles(loc, Particle.ELECTRIC_SPARK);
+            return true;
         }
 
 
