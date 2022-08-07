@@ -2,20 +2,16 @@ package svinerus.buildtogether.aux;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.utils.Utils;
 import svinerus.buildtogether.utils.Localization;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PlaceholderApi extends PlaceholderExpansion {
 
-    BuildingsCache buildingsCache = BuildingsCache.instance;
     Localization blocksLocalisation;
 
     private int blockAutoIndex = 0;
@@ -53,7 +49,16 @@ public class PlaceholderApi extends PlaceholderExpansion {
     @Override
     public String onPlaceholderRequest(Player player, String params) {
         var p = PlaceholderAPI.setBracketPlaceholders(player, params).split("_");
+        try {
+            return onPlaceholderRequest(player, p);
+        } catch (Exception e) {
+            Utils.exception(e, "PlaceholderAPI exception;");
+        }
+        return "internal error";
+    }
 
+
+    private String onPlaceholderRequest(Player player, String[] p) {
         if (Objects.equals(p[0], "timemod")) {
             if (p.length < 2) return "bt_timemod_<mod>_[seconds]";
             var div = p.length == 3 ? Integer.parseInt(p[2]) : 1;
@@ -71,114 +76,51 @@ public class PlaceholderApi extends PlaceholderExpansion {
           BuildTogether.buildingsManager.getBuilding(p[1]);
 
         if (building == null) return "No such building";
-        var buildingCache = buildingsCache.get(building.getName());
 
         switch (p[0]) {
 
             case "progress":
-                return String.valueOf((int) (buildingCache.progress() * 100));
-            case "need-blocks-count":
-                return String.valueOf(buildingCache.needBlocksMap());
-            case "need-blocks-uniq-count":
-                return String.valueOf(buildingCache.needBlocksUniqCount());
+                return String.valueOf((int) (building.progress() * 100));
+
             case "need-blocks-map":
                 if (p.length != 4) return "bt_need-blocks-map_<buildingname>_<index>_<block|count>";
                 var index = Integer.parseInt(p[2]);
-                var blocksCount = buildingCache.needBlocksMap().get(index);
-                var res = "block".equals(p[3]) ?
-                  blocksLocalisation.localize(blocksCount.getKey().translationKey()) : blocksCount.getValue();
-                return String.valueOf(res);
+                var isCount = "count".equals(p[3]);
+                return getBlockInfo(building, index, isCount);
 
-            case "need-blocks-map-auto":
-                if (p.length != 3) return "bt_need-blocks-map_<buildingname>_<block|count>";
-                if ("count".equals(p[2])){
-                    blockAutoIndex++;
-                }
-                if (blockAutoIndex > buildingCache.needBlocksUniqCount()) {
-                    blockAutoIndex = 0;
-                }
-                blocksCount = buildingCache.needBlocksMap().get(blockAutoIndex);
-                res = "block".equals(p[2]) ?
-                        blocksLocalisation.localize(blocksCount.getKey().translationKey()) : blocksCount.getValue();
-                return String.valueOf(res);
+//            case "need-blocks-map-auto":
+            // todo
+//                if (p.length != 3) return "bt_need-blocks-map-auto_<buildingname>_<block|count>";
+//                isCount = "count".equals(p[2]);
+//                var res = getBlockInfo(building, blockAutoIndex, isCount);
+//
+//                res = p[2] + " " + blockAutoIndex;
+//                if (isCount) blockAutoIndex++;
+//                if (blockAutoIndex > buildingCache.needBlocksUniqCount()) blockAutoIndex = 0;
+//                return res;
 
-
-            case "is-need-block-in-hand":
-                var handBlock = player.getInventory().getItemInMainHand().getType();
-                return buildingCache.needBlocksSet().contains(handBlock) ? "yes" : "no";
 
             case "is-need-block-in-env":
-                var invBlocks = Arrays.stream(player.getInventory().getStorageContents())
-                  .filter(Objects::nonNull).map(ItemStack::getType).collect(Collectors.toSet());
-                invBlocks.retainAll(buildingCache.needBlocksSet());
-                return !invBlocks.isEmpty() ? "yes" : "no";
+                var playerInv = player.getInventory();
+                var isContains = building.needBlocks().stream().anyMatch(playerInv::contains);
+                return isContains ? "yes" : "no";
 
 
         }
 
-        return "unknown param" + p[0];
+        return "unknown param: " + p[0];
     }
 
-    static class BuildingsCache {
-        public static BuildingsCache instance = new BuildingsCache();
-        private final HashMap<String, BuildingCache> cache = new HashMap<>();
+    private String getBlockInfo(Building building, int index, boolean isCount) {
+        var needBlocks = building.needBlocksSorted();
+        if (index >= needBlocks.size()) return "";
 
-        public BuildingCache get(String buildingName) {
-            return cache.computeIfAbsent(buildingName, k -> new BuildingCache(BuildTogether.buildingsManager.getBuilding(buildingName)));
-        }
-
-        public void invalidate(String buildingName) {
-            cache.remove(buildingName);
-        }
-
-        static class BuildingCache {
-            private final Building building;
-            private Double progress;
-            private Integer needBlocksCount;
-            private Set<Material> needBlocksSet;
-            private List<Map.Entry<Material, Long>> needBlocksCountMap;
-
-            public BuildingCache(Building building) {
-                this.building = building;
-            }
-
-            public double progress() {
-                if (progress == null) recalc();
-                return progress;
-            }
-
-            public int needBlocksCount() {
-                if (needBlocksCount == null) recalc();
-                return needBlocksCount;
-            }
-
-            public int needBlocksUniqCount() {
-                if (needBlocksCount == null) recalc();
-                return needBlocksSet.size();
-            }
-
-            public Set<Material> needBlocksSet() {
-                if (needBlocksSet == null) recalc();
-                return needBlocksSet;
-            }
-
-            public List<Map.Entry<Material, Long>> needBlocksMap() {
-                if (needBlocksCountMap == null) recalc();
-                return needBlocksCountMap;
-            }
-
-            private void recalc() {
-                progress = building.progress();
-                var needBlocks = building.what();
-                needBlocksCount = needBlocks.size();
-                needBlocksSet = new HashSet<>(needBlocks);
-                needBlocksCountMap = needBlocks.stream()
-                  .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
-                  .entrySet().stream()
-                  .sorted(Map.Entry.comparingByValue())
-                  .toList();
-            }
-        }
+        var block = needBlocks.get(index);
+        if (isCount)
+            return block.getValue().toString();
+        var localizationKey = block.getKey().translationKey();
+        return blocksLocalisation.localize(localizationKey.substring(16));  // remove 'block.minecraft.' prefix
     }
+
 
 }

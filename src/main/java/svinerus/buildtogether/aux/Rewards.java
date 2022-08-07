@@ -47,12 +47,6 @@ public class Rewards implements Listener {
             essApi.giveMoney(event.getPlayer().getName(), worth);
             scoreboard.addScoreboardPointsWorth(event, worth.intValue());
         }
-
-        // all cache value updated, so invalidate the cache
-        if (PlaceholderApi.BuildingsCache.instance != null)
-            PlaceholderApi.BuildingsCache.instance.invalidate(event.getBuilding().getName());
-
-
     }
 
 
