@@ -72,12 +72,8 @@ public class CommandListener implements CommandExecutor, TabCompleter {
                 if (args.length == 2) return new ArrayList<>(List.of("[name_of_new_building]"));
                 if (args.length == 3) return schematicNames();
             }
-            case "list", "remove" -> {
+            case "list", "remove", "where" -> {
                 if (args.length == 2) return buildingNames();
-            }
-            case "where" -> {
-                if (args.length == 2) return buildingNames();
-                if (args.length == 3) return new ArrayList<>(List.of("-t", ""));
             }
         }
         return new ArrayList<>();
@@ -129,16 +125,11 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String buildingName = args[1];
 
         var where = BuildTogether.buildingsManager.getBuilding(buildingName).where(((Entity) sender).getLocation());
-        if (args.length >= 3 && args[2].equals("-t")) {
-            requirePerms(sender, "where.tp");
-            ((Entity) sender).teleport(where);
-        } else {
-            chat.sendMsg(sender, Component.text("where.nearest_block ", NamedTextColor.WHITE).append(
-              Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]", NamedTextColor.GREEN)
-                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/bt " + String.join(" ", args) + " -t"))
-            ));
-        }
+        chat.sendMsg(sender, Component.text("where.nearest_block ", NamedTextColor.WHITE).append(
+          Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]", NamedTextColor.GREEN)
+            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
+            .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/tp  " + where.getBlockX() + " " + where.getBlockY() + " " + where.getBlockZ()))
+        ));
     }
 
     static List<String> buildingNames() {
@@ -177,7 +168,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     }
 
     private boolean havePerms(CommandSender sender, String perm) {
-        return sender.hasPermission("buildtogether."+perm) || sender.isOp();
+        return sender.hasPermission("buildtogether." + perm) || sender.isOp();
     }
 
     private void requirePerms(CommandSender sender, String perm) throws Exception {
