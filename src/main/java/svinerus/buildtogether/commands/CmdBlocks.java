@@ -1,8 +1,9 @@
-package svinerus.buildtogether.aux;
+package svinerus.buildtogether.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -14,11 +15,29 @@ import svinerus.buildtogether.building.Building;
 
 import java.util.List;
 
-public class NeedBlocksInv {
+public class CmdBlocks implements ICommand {
+
+    public String getPerms() {
+        return "blocks";
+    }
+
+    public void run(CommandSender sender, String[] args) throws Exception {
+        if (args.length < 2) throw new Exception("Wrong number of arguments");
+        if (!(sender instanceof Player)) throw new Exception("Only player can use this command");
+
+        String buildingName = args[1];
+        var building = BuildTogether.buildingsManager.getBuilding(buildingName);
+
+        needBlocksInv((Player)sender, building);
+    }
+
+    public List<String> tabCompletion(CommandSender sender, String[] args) {
+        return CommandListener.buildingNames();
+    }
 
 
     // open inv with needed blocks
-    public static void needBlocksInv(Player player, Building building) {
+    private static void needBlocksInv(Player player, Building building) {
         var invTitle = Component.text(BuildTogether.localization.localize("need_blocks_inv_title"), NamedTextColor.GOLD);
         Inventory inv = Bukkit.createInventory(null, 27, invTitle);
 
@@ -47,4 +66,5 @@ public class NeedBlocksInv {
         itemMeta.lore(lore);
         item.setItemMeta(itemMeta);
     }
+
 }
