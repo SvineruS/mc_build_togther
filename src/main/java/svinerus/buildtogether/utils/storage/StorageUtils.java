@@ -30,16 +30,8 @@ public class StorageUtils {
         if (!Files.exists(p)) Files.createDirectories(p);
     }
 
-    public static HashMap<String, String> readYamlToMap(Path path) throws IOException, InvalidConfigurationException {
-        var res = new HashMap<String, String>();
-        var cfg = readYaml(path).getValues(false);
-        cfg.keySet().forEach(key -> res.put(key, cfg.get(key).toString()));
-        return res;
-    }
-    static YamlConfiguration readYaml(Path path) throws IOException, InvalidConfigurationException {
-        var cfg = new YamlConfiguration();
-        cfg.load(path.toFile());
-        return cfg;
+    public static YamlConfiguration readYaml(Path path) throws IOException, InvalidConfigurationException {
+        return YamlConfiguration.loadConfiguration(path.toFile());
     }
 
     static class GsonHelper {

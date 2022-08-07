@@ -11,6 +11,8 @@ import svinerus.buildtogether.BuildTogether;
 import java.util.ArrayList;
 import java.util.List;
 
+import static svinerus.buildtogether.utils.Localization.lt;
+
 public class CmdWhere implements ICommand{
 
     public String getPerms() {
@@ -24,8 +26,8 @@ public class CmdWhere implements ICommand{
         String buildingName = args[1];
 
         var where = BuildTogether.buildingsManager.getBuilding(buildingName).where(((Entity) sender).getLocation());
-        CommandListener.chat.sendMsg(sender, Component.text("where.nearest_block ", NamedTextColor.WHITE).append(
-          Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]", NamedTextColor.GREEN)
+        CommandListener.chat.sendMsg(sender, Component.text(lt("where.nearest_block"), NamedTextColor.WHITE).append(
+          Component.text(" [" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]", NamedTextColor.GREEN)
             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("Listener.chat.coordinates.tooltip")))
             .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/tp  " + where.getBlockX() + " " + where.getBlockY() + " " + where.getBlockZ()))
         ));

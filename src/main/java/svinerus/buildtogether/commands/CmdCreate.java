@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static svinerus.buildtogether.utils.Localization.lt;
+
 public class CmdCreate implements ICommand{
 
     public String getPerms() {
@@ -31,13 +33,13 @@ public class CmdCreate implements ICommand{
 
         var building = BuildTogether.buildingsManager.create(buildingName, schematicName, ((Entity) sender).getLocation());
         CommandListener.chat.sendMsg(sender,
-          Component.text("create.blocks_add_list", NamedTextColor.WHITE)
+          Component.text(lt("create.blocks_add_list"), NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
         );
         CommandListener.chat.sendMsg(sender,
-          Component.text("create.blocks_remove_list", NamedTextColor.WHITE)
+          Component.text(lt("create.blocks_remove_list"), NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getWorldBlocks())));
-        CommandListener.chat.sendMsg(sender, "create.success");
+        CommandListener.chat.sendMsg(sender, lt("create.success"));
     }
 
     public List<String> tabCompletion(CommandSender sender, String[] args) {

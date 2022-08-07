@@ -36,7 +36,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     public static void register(JavaPlugin plugin) {
         var cmd = plugin.getCommand("bt");
         assert cmd != null;
-        var executor = new CommandListener(new Chat(BuildTogether.localization));
+        var executor = new CommandListener(new Chat());
         cmd.setExecutor(executor);
         cmd.setTabCompleter(executor);
     }
@@ -82,22 +82,13 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
     public static class Chat {
         private static final TextComponent text_ = Component.text("[BuildTogether] ").color(NamedTextColor.GOLD);
-        private final TextReplacementConfig replacer;
-
-        public Chat(Localization locale) {
-            replacer = locale.toTextReplacementConfig();
-        }
 
         public void sendMsg(CommandSender sender, String text) {
             sendMsg(sender, Component.text(text).color(NamedTextColor.WHITE));
         }
 
         public void sendMsg(CommandSender sender, TextComponent textComponent) {
-            sender.sendMessage(text_.append(localizeText(textComponent)));
-        }
-
-        private @NotNull Component localizeText(Component textComponent) {
-            return textComponent.replaceText(replacer);
+            sender.sendMessage(text_.append(textComponent));
         }
 
     }

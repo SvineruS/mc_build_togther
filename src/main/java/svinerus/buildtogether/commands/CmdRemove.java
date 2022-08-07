@@ -6,6 +6,8 @@ import svinerus.buildtogether.BuildTogether;
 import java.util.ArrayList;
 import java.util.List;
 
+import static svinerus.buildtogether.utils.Localization.lt;
+
 public class CmdRemove implements ICommand{
 
     public String getPerms() {
@@ -17,7 +19,7 @@ public class CmdRemove implements ICommand{
 
         String buildingName = args[1];
         BuildTogether.buildingsManager.remove(buildingName);
-        CommandListener.chat.sendMsg(sender, "remove.success");
+        CommandListener.chat.sendMsg(sender, lt("remove.success"));
     }
 
     public List<String> tabCompletion(CommandSender sender, String[] args) {

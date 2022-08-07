@@ -5,6 +5,8 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
+import static svinerus.buildtogether.utils.Localization.lt;
+
 public class CmdList implements ICommand{
 
     public String getPerms() {
@@ -13,7 +15,7 @@ public class CmdList implements ICommand{
 
     public  void run(CommandSender sender, String[] args) throws Exception {
         var names = CommandListener.buildingNames();
-        var namesText = names.isEmpty() ? "list.empty" :
+        var namesText = names.isEmpty() ? lt("list.empty") :
           String.join(",", names.toArray(new String[0]));
 
         CommandListener.chat.sendMsg(sender, namesText);
