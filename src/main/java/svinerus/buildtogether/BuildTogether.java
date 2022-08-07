@@ -7,7 +7,6 @@ import svinerus.buildtogether.aux.PlaceholderApi;
 import svinerus.buildtogether.aux.Rewards;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
-import svinerus.buildtogether.utils.Chat;
 import svinerus.buildtogether.utils.listeners.CommandListener;
 import svinerus.buildtogether.utils.listeners.EventListener;
 import svinerus.buildtogether.utils.storage.Buildings;
@@ -23,7 +22,7 @@ public final class BuildTogether extends JavaPlugin {
 
     public static WorldEditPlugin WEPlugin;
     public static BuildingsManager buildingsManager;
-    public static Chat chat;
+    public static Localization localization;
 
     @Override
     public void onEnable() {
@@ -36,8 +35,7 @@ public final class BuildTogether extends JavaPlugin {
 
         // load locale
         var locale = this.getConfig().getString("locale");
-        var localization = new Localization("locales", locale);
-        chat = new Chat(localization);
+        localization = new Localization("locales", locale);
 
         // load required WorldEdit plugin
         WEPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");

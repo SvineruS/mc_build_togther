@@ -2,6 +2,7 @@ package svinerus.buildtogether.utils.listeners;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import svinerus.buildtogether.BuildTogether;
+import svinerus.buildtogether.utils.Localization;
 import svinerus.buildtogether.utils.Utils;
 
 import java.io.IOException;
@@ -26,10 +28,16 @@ import java.util.stream.Stream;
 
 public class CommandListener implements CommandExecutor, TabCompleter {
 
+    private final Chat chat;
+
+    public CommandListener(Chat chat) {
+        this.chat = chat;
+    }
+
     public static void register(JavaPlugin plugin) {
         var cmd = plugin.getCommand("bt");
         assert cmd != null;
-        var executor = new CommandListener();
+        var executor = new CommandListener(new Chat(BuildTogether.localization));
         cmd.setExecutor(executor);
         cmd.setTabCompleter(executor);
     }
@@ -48,7 +56,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             }
         } catch (Exception e) {
             e.printStackTrace(System.out);
-            BuildTogether.chat.sendMsg(sender, Component.text(e.toString()).color(NamedTextColor.RED));
+            chat.sendMsg(sender, Component.text(e.toString()).color(NamedTextColor.RED));
         }
         return true;
     }
@@ -84,14 +92,14 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         String schematicName = args[2];
 
         var building = BuildTogether.buildingsManager.create(buildingName, schematicName, ((Entity) sender).getLocation());
-        BuildTogether.chat.sendMsg(sender,
+        chat.sendMsg(sender,
           Component.text("create.blocks_add_list", NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getSchemaBlocks()))
         );
-        BuildTogether.chat.sendMsg(sender,
+        chat.sendMsg(sender,
           Component.text("create.blocks_remove_list", NamedTextColor.WHITE)
             .append(blocksCount(building.getBuildingSchema().getWorldBlocks())));
-        BuildTogether.chat.sendMsg(sender, "create.success");
+        chat.sendMsg(sender, "create.success");
     }
 
     void remove(CommandSender sender, String[] args) throws Exception {
@@ -100,7 +108,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
 
         String buildingName = args[1];
         BuildTogether.buildingsManager.remove(buildingName);
-        BuildTogether.chat.sendMsg(sender, "remove.success");
+        chat.sendMsg(sender, "remove.success");
     }
 
     void list(CommandSender sender, String[] args) throws Exception {
@@ -109,7 +117,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         var namesText = names.isEmpty() ? "list.empty" :
           String.join(",", names.toArray(new String[0]));
 
-        BuildTogether.chat.sendMsg(sender, namesText);
+        chat.sendMsg(sender, namesText);
     }
 
 
@@ -125,7 +133,7 @@ public class CommandListener implements CommandExecutor, TabCompleter {
             requirePerms(sender, "where.tp");
             ((Entity) sender).teleport(where);
         } else {
-            BuildTogether.chat.sendMsg(sender, Component.text("where.nearest_block ", NamedTextColor.WHITE).append(
+            chat.sendMsg(sender, Component.text("where.nearest_block ", NamedTextColor.WHITE).append(
               Component.text("[" + where.getBlockX() + ", " + where.getBlockY() + ", " + where.getBlockZ() + "]", NamedTextColor.GREEN)
                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/bt " + String.join(" ", args) + " -t"))
@@ -176,4 +184,25 @@ public class CommandListener implements CommandExecutor, TabCompleter {
         if (!havePerms(sender, perm)) throw new Exception("no_perms");
     }
 
+    public static class Chat {
+        private static final TextComponent text_ = Component.text("[BuildTogether] ").color(NamedTextColor.GOLD);
+        private final TextReplacementConfig replacer;
+
+        public Chat(Localization locale) {
+            replacer = locale.toTextReplacementConfig();
+        }
+
+        public void sendMsg(CommandSender sender, String text) {
+            sendMsg(sender, Component.text(text).color(NamedTextColor.WHITE));
+        }
+
+        public void sendMsg(CommandSender sender, TextComponent textComponent) {
+            sender.sendMessage(text_.append(localizeText(textComponent)));
+        }
+
+        private @NotNull Component localizeText(Component textComponent) {
+            return textComponent.replaceText(replacer);
+        }
+
+    }
 }
