@@ -2,6 +2,9 @@ package svinerus.buildtogether.commands;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CmdList implements ICommand{
 
     public String getPerms() {
@@ -16,7 +19,8 @@ public class CmdList implements ICommand{
         CommandListener.chat.sendMsg(sender, namesText);
     }
 
-    public java.util.List<String> tabCompletion(CommandSender sender, String[] args) {
-        return CommandListener.buildingNames();
+    public List<String> tabCompletion(CommandSender sender, String[] args) {
+        if (args.length == 2) return CommandListener.buildingNames();
+        return new ArrayList<>();
     }
 }

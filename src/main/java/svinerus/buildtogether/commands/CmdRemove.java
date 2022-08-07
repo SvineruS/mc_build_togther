@@ -3,6 +3,7 @@ package svinerus.buildtogether.commands;
 import org.bukkit.command.CommandSender;
 import svinerus.buildtogether.BuildTogether;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CmdRemove implements ICommand{
@@ -20,6 +21,6 @@ public class CmdRemove implements ICommand{
     }
 
     public List<String> tabCompletion(CommandSender sender, String[] args) {
-        return CommandListener.buildingNames();
-    }
-}
+        if (args.length == 2) return CommandListener.buildingNames();
+        return new ArrayList<>();
+    }}

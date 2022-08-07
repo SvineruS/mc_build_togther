@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import svinerus.buildtogether.BuildTogether;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CmdWhere implements ICommand{
@@ -31,7 +32,7 @@ public class CmdWhere implements ICommand{
     }
 
     public List<String> tabCompletion(CommandSender sender, String[] args) {
-        return CommandListener.buildingNames();
+        if (args.length == 2) return CommandListener.buildingNames();
+        return new ArrayList<>();
     }
-
 }

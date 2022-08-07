@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.Building;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CmdBlocks implements ICommand {
@@ -28,11 +29,12 @@ public class CmdBlocks implements ICommand {
         String buildingName = args[1];
         var building = BuildTogether.buildingsManager.getBuilding(buildingName);
 
-        needBlocksInv((Player)sender, building);
+        needBlocksInv((Player) sender, building);
     }
 
     public List<String> tabCompletion(CommandSender sender, String[] args) {
-        return CommandListener.buildingNames();
+        if (args.length == 2) return CommandListener.buildingNames();
+        return new ArrayList<>();
     }
 
 
