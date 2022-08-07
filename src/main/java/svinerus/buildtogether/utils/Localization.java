@@ -32,7 +32,12 @@ public class Localization {
     }
 
     public String localize(String key) {
-        return this.locale.getOrDefault(key, key);
+        var r = locale.get(key);
+        if (r == null) {
+            Utils.logger().warning("Failed to localize " + key);
+            return key;
+        }
+        return r;
     }
 
     public TextReplacementConfig toTextReplacementConfig() {
