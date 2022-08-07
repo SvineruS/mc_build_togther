@@ -153,7 +153,7 @@ public class Building {
 
     // return true on layer finished
     private boolean checkLayerFinish() {
-        if (!isActiveLayerFinished(world())) return false;
+        if (!isActiveLayerFinished()) return false;
         tips.hideAll();
 
         do {
@@ -162,7 +162,7 @@ public class Building {
                 onFinished();
                 return true;
             }
-        } while (isActiveLayerFinished(world()));
+        } while (isActiveLayerFinished());
 
         setBlockTips();
 
@@ -183,7 +183,8 @@ public class Building {
     }
 
 
-    private boolean isActiveLayerFinished(World world) {
+    private boolean isActiveLayerFinished() {
+        var world = world();
         for (var location : activeLayer().blocks().keySet())
             if (!isBlockCorrect(location, world))
                 return false;
