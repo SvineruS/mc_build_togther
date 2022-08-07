@@ -14,6 +14,7 @@ import svinerus.buildtogether.utils.storage.Buildings;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Building {
     private final String name;
@@ -78,6 +79,11 @@ public class Building {
         return locVec.containedWithin(buildingSchema.region.getMinimumPoint(), buildingSchema.region.getMaximumPoint());
     }
 
+    public double progress() {
+        return (double) activeLayerIndex / this.buildingSchema.layers.size();
+    }
+
+
     // find the closest incorrect block to this location
     public Location where(Location location) throws IllegalArgumentException {
         if (!location.getWorld().equals(world())) throw new IllegalArgumentException("Wrong world");
@@ -92,20 +98,38 @@ public class Building {
     }
 
     // blocks in current layer that are incorrect
-    public List<Material> what() {
-        return activeLayer().blocks().entrySet().stream()
-          .filter(l -> !isBlockCorrect(l.getKey(), world()) && !l.getValue().isAir())
-          .map(Map.Entry::getValue).toList();
+    private transient List<Material> needBlocksCache;
+
+    public List<Material> needBlocks() {
+        if (needBlocksCache == null) {
+            needBlocksCache = activeLayer().blocks().entrySet().stream()
+              .filter(l -> !isBlockCorrect(l.getKey(), world()) && !l.getValue().isAir())
+              .map(Map.Entry::getValue).toList();
+        }
+        return needBlocksCache;
     }
 
-    public double progress() {
-        return (double) activeLayerIndex / this.buildingSchema.layers.size();
+    // blocks in current layer that are incorrect
+    private transient List<Map.Entry<Material, Long>> needBlocksSortedCache;
+
+    public List<Map.Entry<Material, Long>> needBlocksSorted() {
+        if (needBlocksSortedCache == null) {
+            needBlocksSortedCache = needBlocks().stream()
+              .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
+              .entrySet().stream()
+              .sorted(Map.Entry.comparingByValue())
+              .toList();
+        }
+        return needBlocksSortedCache;
     }
 
 
     private void onCorrectBlockPlacement() {
-        if (!checkLayerFinish()) return;
-        onLayerFinished();
+        needBlocksCache = null;
+        needBlocksSortedCache = null;
+
+        if (checkLayerFinish())
+            onLayerFinished();
     }
 
     private void onLayerFinished() {
