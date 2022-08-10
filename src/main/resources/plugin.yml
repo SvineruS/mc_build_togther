@@ -2,14 +2,13 @@ name: BuildTogether
 version: '${project.version}'
 main: svinerus.buildtogether.BuildTogether
 api-version: 1.19
-prefix: logprefix
+prefix: BuildTogether
 depend: [ WorldEdit ]
 softdepend: [PlaceholderAPI, EssentialsX]
-authors: [ authors ]
-description: description
-website: website
+authors: [ svinerus ]
+description: Build schematic with tips and rewards
+website: https://github.com/SvineruS/mc_build_togther
 commands:
   bt:
     description: Create buildTogether template at this location
     usage: /bt <action> <building_name> [schematic_name>]
-    permission: buildtogether.bt
