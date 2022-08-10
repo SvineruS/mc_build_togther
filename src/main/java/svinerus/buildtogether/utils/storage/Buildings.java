@@ -21,6 +21,7 @@ public class Buildings {
             allFiles = Utils.allFiles(getBuildingsPath());
         } catch (IOException e) {
             Utils.exception(e, "Failed to scan files in " + getBuildingsPath());
+            return buildings;
         }
 
         for (var file : allFiles) {
@@ -30,11 +31,6 @@ public class Buildings {
                 buildings.put(building.getName(), building);
         }
         return buildings;
-    }
-
-
-    public static Building loadBuilding(String buildingName) {
-        return loadBuilding(getBuildingPath(buildingName));
     }
 
     public static Building loadBuilding(Path filePath) {
@@ -63,6 +59,10 @@ public class Buildings {
     public static void off(String buildingName) throws IOException {
         var filePath = getBuildingPath(buildingName);
         Files.move(filePath, filePath.resolveSibling(buildingName + ".off"));
+    }
+
+    public static boolean isExist(String buildingName) {
+        return getBuildingPath(buildingName).toFile().exists();
     }
 
     // utils

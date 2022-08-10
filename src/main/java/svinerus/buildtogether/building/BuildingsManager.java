@@ -18,7 +18,7 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
     public Building create(String buildingName, String schematicName, Location location) throws IOException, IllegalArgumentException {
         if (buildings.containsKey(buildingName))
             throw new IllegalArgumentException("Building with name " + buildingName + " already exists");
-        if (Buildings.loadBuilding(buildingName) != null)
+        if (Buildings.isExist(buildingName))
             throw new IllegalArgumentException("Building with name " + buildingName + " already exists (but not loaded)");
 
         var schema = Creator.Create(schematicName, location);
