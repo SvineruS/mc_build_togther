@@ -42,7 +42,7 @@ public class CmdBlocks implements ICommand {
 
     // open inv with needed blocks
     private static void needBlocksInv(Player player, Building building) {
-        var invTitle = Component.text(lt("need_blocks_inv_title"), NamedTextColor.GOLD);
+        var invTitle = Component.text(lt("need_blocks_inv.title"), NamedTextColor.GOLD);
         Inventory inv = Bukkit.createInventory(null, 27, invTitle);
 
 
@@ -63,7 +63,7 @@ public class CmdBlocks implements ICommand {
 
 
     private static void setLoreAndEnchant(ItemStack item) {
-        List<Component> lore = List.of(Component.text(lt("need_blocks_inv_have_it"), NamedTextColor.GREEN));
+        List<Component> lore = List.of(Component.text(lt("need_blocks_inv.have_it"), NamedTextColor.GREEN));
         item.addUnsafeEnchantment(Enchantment.LURE, 1);
         final ItemMeta itemMeta = item.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

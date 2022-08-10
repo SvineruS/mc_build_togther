@@ -4,7 +4,7 @@ main: svinerus.buildtogether.BuildTogether
 api-version: 1.19
 prefix: BuildTogether
 depend: [ WorldEdit ]
-softdepend: [PlaceholderAPI, EssentialsX]
+softdepend: [PlaceholderAPI]
 authors: [ svinerus ]
 description: Build schematic with tips and rewards
 website: https://github.com/SvineruS/mc_build_togther

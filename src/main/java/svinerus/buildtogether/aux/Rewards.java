@@ -1,31 +1,33 @@
 package svinerus.buildtogether.aux;
 
-import com.earth2me.essentials.IEssentials;
-import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.building.BlockPlacement;
 import svinerus.buildtogether.events.BlockPlacedEvent;
 import svinerus.buildtogether.utils.Utils;
+import svinerus.buildtogether.utils.storage.StorageUtils;
 
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
+import java.io.IOException;
 
 public class Rewards implements Listener {
 
 
     @Nullable
-    private EssentialsApi essApi;
     private final Scoreboard scoreboard;
+    private YamlConfiguration worth;
 
     public Rewards() {
-        essApi = null;
-        var essPlugin = (IEssentials) Bukkit.getPluginManager().getPlugin("EssentialsX");
-        if (essPlugin == null) Utils.logger().warning("Working without EssentialsX");
-        else essApi = new EssentialsApi(essPlugin);
-
         scoreboard = new Scoreboard();
+        try {
+            worth = StorageUtils.readYaml(StorageUtils.getPluginPath().resolve("materials_worth.yml"));
+        } catch (IOException | InvalidConfigurationException e) {
+            Utils.exception(e, "Could not read materials_worth.yml; Working without worth!");
+        }
     }
 
     public static void register(JavaPlugin plugin) {
@@ -39,13 +41,12 @@ public class Rewards implements Listener {
 
         scoreboard.addScoreboardPoints(event);
 
-        // if essentials is here we can do something with block worth
-        if (essApi != null) {
-            var worth = essApi.getWorth(event.getBlockEvent().getBlock().getType());
-            if (worth == null) worth = BigDecimal.valueOf(1);  // todo
+        if (worth != null) {
+            var material = event.getBlockEvent().getBlock().getType().toString();
+            var blockWorth = worth.getDouble(material) * BuildTogether.instance.getConfig().getDouble("rewards.worth_multiplier");
 
-            essApi.giveMoney(event.getPlayer().getName(), worth);
-            scoreboard.addScoreboardPointsWorth(event, worth.intValue());
+//            essApi.giveMoney(event.getPlayer().getName(), worth);
+            scoreboard.addScoreboardPointsWorth(event, (int)Math.ceil(blockWorth));
         }
     }
 

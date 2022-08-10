@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import svinerus.buildtogether.events.BlockPlacedEvent;
 
+import java.util.HashMap;
+
 public class Scoreboard {
     private final org.bukkit.scoreboard.Scoreboard scoreboard;
 
@@ -22,6 +24,18 @@ public class Scoreboard {
         addScore(getObjective("worth_" + event.getBuilding().getName()), event.getPlayer(), worth);
     }
 
+    public HashMap<String, Integer> getScores(Objective objective) {
+        var scores = new HashMap<String, Integer>();
+        var players = scoreboard.getEntries();
+        for (var player : players) {
+            var score = objective.getScore(player).getScore();
+            if (score == 0) continue;
+            scores.put(player, score);
+        }
+        return scores;
+    }
+
+
     private Objective getObjective(String name) {
         name = "bt_" + name;
         var scoreboardObjective = scoreboard.getObjective(name);
@@ -34,5 +48,6 @@ public class Scoreboard {
         var score = objective.getScore(player);
         score.setScore(score.getScore() + amount);
     }
+
 
 }
