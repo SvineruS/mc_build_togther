@@ -16,6 +16,8 @@ import svinerus.buildtogether.utils.Localization;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static svinerus.buildtogether.utils.Localization.lt;
+
 public class CommandListener implements CommandExecutor, TabCompleter {
 
     static Chat chat;  // todo
@@ -45,15 +47,16 @@ public class CommandListener implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         try {
-            if (args.length < 1) throw new Exception("Enter subcommand");
-            if (!commands.containsKey(args[0])) throw new Exception("Unknown subcommand");
+            if (args.length < 1) throw new Exception("error.enter_subcommand");
+            if (!commands.containsKey(args[0])) throw new Exception("error.unknown_subcommand");
             var cmd = commands.get(args[0]);
             if (!havePerms(sender, cmd.getPerms()))
-                throw new Exception("no_perms");
+                throw new Exception("error.no_perms");
             cmd.run(sender, args);
         } catch (Exception e) {
             e.printStackTrace(System.out);
-            chat.sendMsg(sender, Component.text(e.toString()).color(NamedTextColor.RED));
+            chat.sendMsg(sender, Component.text(lt(e.getMessage())).color(NamedTextColor.RED));
+            return false;
         }
         return true;
     }

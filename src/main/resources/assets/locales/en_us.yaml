@@ -10,3 +10,9 @@ create:
   success: 'Create success'
 list.empty: 'No buildings now'
 where.nearest_block: 'Nearest block at '
+error:
+  only_player: 'Command only for players'
+  wrong_args_num: 'Wrong arguments number'
+  no_perms: 'You have no permissions for this command'
+  unknown_subcommand: 'Unknown subcommand'
+  enter_subcommand: 'Enter subcommand'

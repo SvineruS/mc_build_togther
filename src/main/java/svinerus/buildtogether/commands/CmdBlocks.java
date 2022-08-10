@@ -26,8 +26,8 @@ public class CmdBlocks implements ICommand {
     }
 
     public void run(CommandSender sender, String[] args) throws Exception {
-        if (args.length < 2) throw new Exception("Wrong number of arguments");
-        if (!(sender instanceof Player)) throw new Exception("Only player can use this command");
+        if (args.length < 2) throw new Exception("error.wrong_args_num");
+        if (!(sender instanceof Player)) throw new Exception("error.only_player");
 
         String buildingName = args[1];
         var building = BuildTogether.buildingsManager.getBuilding(buildingName);

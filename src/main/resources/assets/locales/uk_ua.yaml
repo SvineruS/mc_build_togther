@@ -10,3 +10,9 @@ create:
   success: 'Успішно створено!'
 list.empty: 'Наразі жодного будівництва'
 where.nearest_block: 'Найближчий блок  '
+error:
+  only_player: 'Команда тільки для гравців'
+  wrong_args_num: 'Неправильна кількість аргументів'
+  no_perms: 'У тебе немає прав на цю команду'
+  unknown_subcommand: 'Неправильна команда'
+  enter_subcommand: 'Недописана команда'

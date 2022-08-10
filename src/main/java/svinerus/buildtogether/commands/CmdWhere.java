@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import svinerus.buildtogether.BuildTogether;
 
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class CmdWhere implements ICommand{
     }
 
     public void run(CommandSender sender, String[] args) throws Exception {
-        if (args.length < 2) throw new Exception("Wrong number of arguments");
-        if (!(sender instanceof Entity)) throw new Exception("Only entity can use this command");
+        if (args.length < 2) throw new Exception("error.wrong_args_num");
+        if (!(sender instanceof Player)) throw new Exception("error.only_player");
 
         String buildingName = args[1];
 

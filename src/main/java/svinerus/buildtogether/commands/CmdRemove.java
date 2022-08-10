@@ -17,7 +17,7 @@ public class CmdRemove implements ICommand{
     }
 
     public void run(CommandSender sender, String[] args) throws Exception {
-        if (args.length != 2) throw new Exception("Wrong number of arguments");
+        if (args.length != 2) throw new Exception("error.wrong_args_num");
 
         String buildingName = args[1];
         BuildTogether.buildingsManager.remove(buildingName);
