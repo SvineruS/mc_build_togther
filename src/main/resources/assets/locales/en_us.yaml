@@ -1,3 +1,11 @@
-test: test
-create.success: Create successful
-remove.success: Remove successful
+need_blocks_inv:
+  title: 'Blocks for building'
+  have_it: 'You have this block!'
+remove:
+  success: 'Remove success'
+create:
+  blocks_add_list: 'Blocks to place:'
+  blocks_remove_list: 'Blocks to remove:'
+  success: 'Create success'
+list.empty: 'No buildings now'
+where.nearest_block: 'Nearest block at '

@@ -1,7 +1,6 @@
 package svinerus.buildtogether.utils;
 
 
-import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.configuration.InvalidConfigurationException;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.utils.storage.StorageUtils;
@@ -17,12 +16,20 @@ public class Localization {
     private final Path filePath;
 
     public Localization(String path, String localeName) {
-        filePath = StorageUtils.getPluginPath().resolve(path).resolve(localeName + ".yaml");
-        locale = loadLocaleSafe(path, localeName);
-        if (locale == null)
-            locale = loadLocaleSafe(path, default_lang);
+        var localesPath = StorageUtils.getPluginPath().resolve("locales");
+
+        var filePath = localesPath.resolve(localeName + ".yaml");
+        locale = loadLocaleSafe(filePath);
+
+        if (locale == null) {
+            filePath = localesPath.resolve(default_lang + ".yaml");
+            locale = loadLocaleSafe(filePath);
+        }
+
         if (locale == null)
             throw new IllegalArgumentException("Failed to load " + localeName + " locale. Default locale also cannot be loaded.");
+
+        this.filePath = filePath;
     }
 
     public static String lt(String key) {
@@ -39,21 +46,21 @@ public class Localization {
         return r;
     }
 
-    private HashMap<String, String> loadLocaleSafe(String path, String localeName) {
+    private HashMap<String, String> loadLocaleSafe(Path path) {
         try {
             var res = new HashMap<String, String>();
-            var cfg = StorageUtils.readYaml(filePath);
+            var cfg = StorageUtils.readYaml(path);
             cfg.getKeys(true).forEach(key -> res.put(key, cfg.getString(key)));
             return res;
         } catch (IOException | InvalidConfigurationException e) {
-            Utils.exception(e, "Failed to load locale from " + filePath);
+            Utils.exception(e, "Failed to load locale from " + path);
         }
         return null;
     }
+
     private void addLocalizationPlaceholder(String key) {
         try {
             var cfg = StorageUtils.readYaml(filePath);
-            cfg.options().pathSeparator('!');  // hack to not split path by '.'
             cfg.set(key, key);
             cfg.save(filePath.toFile());
         } catch (IOException | InvalidConfigurationException e) {

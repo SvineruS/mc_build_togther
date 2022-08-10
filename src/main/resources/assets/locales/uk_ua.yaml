@@ -1,0 +1,11 @@
+need_blocks_inv:
+  title: 'Блоки, що треба поставити'
+  have_it: 'Ти маєш цей блок!'
+remove:
+  success: 'Успішно видалено!'
+create:
+  blocks_add_list: 'Блоки, які треба буде поставити:'
+  blocks_remove_list: 'Блоки, які треба буде зламати:'
+  success: 'Успішно створено!'
+list.empty: 'Наразі жодного будівництва'
+where.nearest_block: 'Найближчий блок  '
