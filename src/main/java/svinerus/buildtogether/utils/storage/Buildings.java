@@ -24,8 +24,9 @@ public class Buildings {
         }
 
         for (var file : allFiles) {
+            if (file.getFileName().toString().endsWith(".off")) continue;
             var building = loadBuilding(file);
-            if (building != null && !building.getName().endsWith(".off"))
+            if (building != null)
                 buildings.put(building.getName(), building);
         }
         return buildings;
