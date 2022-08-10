@@ -16,7 +16,7 @@ public class Localization {
     private final Path filePath;
 
     public Localization(String path, String localeName) {
-        var localesPath = StorageUtils.getPluginPath().resolve("locales");
+        var localesPath = StorageUtils.getPluginPath().resolve(path);
 
         var filePath = localesPath.resolve(localeName + ".yaml");
         locale = loadLocaleSafe(filePath);

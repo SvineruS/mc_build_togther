@@ -14,8 +14,6 @@ public class PlaceholderApi extends PlaceholderExpansion {
 
     Localization blocksLocalisation;
 
-    private int blockAutoIndex = 0;
-
     public PlaceholderApi(String locale) {
         this.blocksLocalisation = new Localization("locales/blocks", locale);
     }
@@ -88,17 +86,15 @@ public class PlaceholderApi extends PlaceholderExpansion {
                 var isCount = "count".equals(p[3]);
                 return getBlockInfo(building, index, isCount);
 
-//            case "need-blocks-map-auto":
-            // todo
-//                if (p.length != 3) return "bt_need-blocks-map-auto_<buildingname>_<block|count>";
-//                isCount = "count".equals(p[2]);
-//                var res = getBlockInfo(building, blockAutoIndex, isCount);
-//
-//                res = p[2] + " " + blockAutoIndex;
-//                if (isCount) blockAutoIndex++;
-//                if (blockAutoIndex > buildingCache.needBlocksUniqCount()) blockAutoIndex = 0;
-//                return res;
-
+            case "need-blocks-map-auto":
+                if (p.length != 4) return "bt_need-blocks-map-auto_<buildingname>_<index>_<block|count>";
+                index = Integer.parseInt(p[2]);
+                isCount = "count".equals(p[3]);
+                var blocksCount = building.needBlocksSorted().size();
+                var autoIndex = System.currentTimeMillis() / 1000L / blocksCount %
+                  BuildTogether.instance.getConfig().getInt("placeholderapi.block_change_time");
+                index = (index + (int) autoIndex) % (blocksCount + 1);
+                return getBlockInfo(building, index, isCount);
 
             case "is-need-block-in-env":
                 var playerInv = player.getInventory();

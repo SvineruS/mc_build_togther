@@ -1,3 +1,5 @@
 locale: en_us
 rewards.enabled: true
 rewards.worth_multiplier: 10.0
+placeholderapi:
+  block_change_time: 3
