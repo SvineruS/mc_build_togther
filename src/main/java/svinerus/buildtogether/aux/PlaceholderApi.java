@@ -91,6 +91,7 @@ public class PlaceholderApi extends PlaceholderExpansion {
                 index = Integer.parseInt(p[2]);
                 isCount = "count".equals(p[3]);
                 var blocksCount = building.needBlocksSorted().size();
+                if (blocksCount == 0) return "";
                 var autoIndex = System.currentTimeMillis() / 1000L / blocksCount %
                   BuildTogether.instance.getConfig().getInt("placeholderapi.block_change_time");
                 index = (index + (int) autoIndex) % (blocksCount + 1);
