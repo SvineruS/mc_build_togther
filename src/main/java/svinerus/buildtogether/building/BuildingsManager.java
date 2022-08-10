@@ -21,9 +21,13 @@ public record BuildingsManager(HashMap<String, Building> buildings) {
         if (Buildings.loadBuilding(buildingName) != null)
             throw new IllegalArgumentException("Building with name " + buildingName + " already exists (but not loaded)");
 
-
         var schema = Creator.Create(schematicName, location);
         var building = new Building(buildingName, schema);
+
+        var overlappingBuilding = buildings.values().stream().filter(b -> b.isInside(building)).findAny();
+        if (overlappingBuilding.isPresent())
+            throw new IllegalArgumentException("Building " + buildingName + " is overlapping with another building " + overlappingBuilding.get().getName());
+
         buildings.put(buildingName, building);
         building.onEnable();
         return building;

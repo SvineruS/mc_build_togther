@@ -48,6 +48,10 @@ public class Building {
 
 
     public BlockPlacement blockPlaced(Location loc, Material newMat) {
+        // todo falling block (place or break)
+        // todo block metadata (rotatable blocks)
+
+
         var locVec = Utils.toVector(loc);
         if (!isInsideActiveLayer(locVec))
             return BlockPlacement.OUTSIDE_LAYER;
@@ -76,7 +80,16 @@ public class Building {
 
     public boolean isInside(Location location) {
         var locVec = Utils.toVector(location);
-        return locVec.containedWithin(buildingSchema.region.getMinimumPoint(), buildingSchema.region.getMaximumPoint());
+        return buildingSchema.region.contains(locVec);
+    }
+
+    public boolean isInside(Building otherBuilding) {
+        var otherRegion = otherBuilding.buildingSchema.region;
+        var points2D = otherRegion.polygonize(4);
+        var yMin = otherRegion.getMinimumPoint().getY();
+        var yMax = otherRegion.getMaximumPoint().getY();
+        return points2D.stream().map(bv2 -> BlockVector3.at(bv2.getX(), yMin, bv2.getZ())).anyMatch(this.buildingSchema.region::contains)
+          || points2D.stream().map(bv2 -> BlockVector3.at(bv2.getX(), yMax, bv2.getZ())).anyMatch(this.buildingSchema.region::contains);
     }
 
     public double progress() {
