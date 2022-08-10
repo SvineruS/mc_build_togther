@@ -52,7 +52,7 @@ public class Buildings {
     public static void saveBuilding(Building building) {
         var filePath = getBuildingPath(building.getName());
         try {
-            StorageUtils.createPath(filePath);
+            StorageUtils.createPath(filePath.getParent());
             Files.write(filePath, StorageUtils.gson.toJson(building).getBytes());
         } catch (IOException e) {
             Utils.exception(e,"Failed to save config to " + filePath);
