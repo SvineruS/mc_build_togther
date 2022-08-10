@@ -20,12 +20,12 @@ public class Buildings {
         try {
             allFiles = Utils.allFiles(getBuildingsPath());
         } catch (IOException e) {
-            Utils.exception(e,"Failed to scan files in " + getBuildingsPath());
+            Utils.exception(e, "Failed to scan files in " + getBuildingsPath());
         }
 
         for (var file : allFiles) {
             var building = loadBuilding(file);
-            if (building != null)
+            if (building != null && !building.getName().endsWith(".off"))
                 buildings.put(building.getName(), building);
         }
         return buildings;
@@ -55,8 +55,13 @@ public class Buildings {
             StorageUtils.createPath(filePath.getParent());
             Files.write(filePath, StorageUtils.gson.toJson(building).getBytes());
         } catch (IOException e) {
-            Utils.exception(e,"Failed to save config to " + filePath);
+            Utils.exception(e, "Failed to save config to " + filePath);
         }
+    }
+
+    public static void off(String buildingName) throws IOException {
+        var filePath = getBuildingPath(buildingName);
+        Files.move(filePath, filePath.resolveSibling(buildingName + ".off"));
     }
 
     // utils

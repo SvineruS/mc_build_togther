@@ -2,6 +2,8 @@ package svinerus.buildtogether.commands;
 
 import org.bukkit.command.CommandSender;
 import svinerus.buildtogether.BuildTogether;
+import svinerus.buildtogether.utils.storage.Buildings;
+import svinerus.buildtogether.utils.storage.StorageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class CmdRemove implements ICommand{
 
         String buildingName = args[1];
         BuildTogether.buildingsManager.remove(buildingName);
+        Buildings.off(buildingName);
         CommandListener.chat.sendMsg(sender, lt("remove.success"));
     }
 
