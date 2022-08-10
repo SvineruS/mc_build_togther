@@ -40,6 +40,7 @@ class BlockTip {
         var blockItem = new ItemStack(material);
 
         var loc = location.toCenterLocation().subtract(0, 1.5, 0);  // armor stand too high
+        loc.setYaw(45);
 
         stand = location.getWorld().spawn(loc, ArmorStand.class);
         // todo set name
