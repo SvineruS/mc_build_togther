@@ -1,6 +1,7 @@
 need_blocks_inv:
   title: 'Blocks for building'
   have_it: 'You have this block!'
+  count: 'Need count: '
 remove:
   success: 'Remove success'
 create:

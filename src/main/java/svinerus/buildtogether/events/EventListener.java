@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.BuildTogether;
 import svinerus.buildtogether.utils.Utils;
@@ -52,6 +53,14 @@ public class EventListener implements Listener {
         }
 
 
+    }
+
+
+    // disable ability to get blocks from custom inventory
+    @EventHandler
+    public void onInventoryClick(final InventoryClickEvent e) {
+        if (e.getInventory().getHolder() != null) return;
+        e.setCancelled(true);
     }
 
 }

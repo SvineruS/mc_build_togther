@@ -1,6 +1,7 @@
 need_blocks_inv:
   title: 'Блоки, що треба поставити'
   have_it: 'Ти маєш цей блок!'
+  count: 'Потрібна кількість: '
 remove:
   success: 'Успішно видалено!'
 create:

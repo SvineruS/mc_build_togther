@@ -3,6 +3,7 @@ package svinerus.buildtogether.commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -45,30 +46,31 @@ public class CmdBlocks implements ICommand {
         var invTitle = Component.text(lt("need_blocks_inv.title"), NamedTextColor.GOLD);
         Inventory inv = Bukkit.createInventory(null, 27, invTitle);
 
-
         var needBlocks = building.needBlocksSorted();
         var playerInv = player.getInventory();
 
-        for (var entry : needBlocks) {
-            var item = new ItemStack(entry.getKey(), entry.getValue().intValue());
-
-            if (playerInv.contains(entry.getKey()))
-                setLoreAndEnchant(item);
-
-            inv.addItem(item);
-        }
+        for (var entry : needBlocks)
+            inv.addItem(createItem(entry.getKey(), entry.getValue().intValue(), playerInv.contains(entry.getKey())));
 
         player.openInventory(inv);
     }
 
 
-    private static void setLoreAndEnchant(ItemStack item) {
-        List<Component> lore = List.of(Component.text(lt("need_blocks_inv.have_it"), NamedTextColor.GREEN));
-        item.addUnsafeEnchantment(Enchantment.LURE, 1);
+    private static ItemStack createItem(Material mat, Integer amount, boolean playerHaveIt) {
+        var item = new ItemStack(mat);
+        var lore = new ArrayList<Component>();
+
+        lore.add(Component.text(lt("need_blocks_inv.count") + amount, NamedTextColor.WHITE));
+        if (playerHaveIt) {
+            lore.add(Component.text(lt("need_blocks_inv.have_it"), NamedTextColor.GREEN));
+            item.addUnsafeEnchantment(Enchantment.LURE, 1);
+        }
+
         final ItemMeta itemMeta = item.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemMeta.lore(lore);
         item.setItemMeta(itemMeta);
+        return item;
     }
 
 }
