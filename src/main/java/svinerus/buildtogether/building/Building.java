@@ -11,6 +11,7 @@ import svinerus.buildtogether.events.LayerFinishedEvent;
 import svinerus.buildtogether.utils.Utils;
 import svinerus.buildtogether.utils.storage.Buildings;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +131,7 @@ public class Building {
             needBlocksSortedCache = needBlocks().stream()
               .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
               .entrySet().stream()
-              .sorted(Map.Entry.comparingByValue())
+              .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
               .toList();
         }
         return needBlocksSortedCache;
