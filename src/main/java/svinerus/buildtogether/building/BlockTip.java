@@ -1,5 +1,6 @@
 package svinerus.buildtogether.building;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -30,7 +31,7 @@ class BlockTips {
     }
 }
 
-class BlockTip {
+public class BlockTip {
     final ArmorStand stand;
 
     public BlockTip(Location location, Material material) {
@@ -43,7 +44,9 @@ class BlockTip {
         loc.setYaw(45);
 
         stand = location.getWorld().spawn(loc, ArmorStand.class);
-        // todo set name
+//        stand.customName(Component.translatable(material.translationKey()));
+//        stand.setCustomNameVisible(true);  // looks bad (
+        stand.addScoreboardTag("bttip");
         stand.setItem(EquipmentSlot.HEAD, blockItem);
         stand.setCollidable(false);
         stand.setMarker(true);
@@ -55,5 +58,9 @@ class BlockTip {
 
     public void die() {
         stand.remove();
+    }
+
+    public static void killAll() {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:kill @e[tag=bttip]");
     }
 }

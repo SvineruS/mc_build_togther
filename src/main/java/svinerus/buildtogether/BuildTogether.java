@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.aux.PlaceholderApi;
 import svinerus.buildtogether.aux.Rewards;
+import svinerus.buildtogether.building.BlockTip;
 import svinerus.buildtogether.building.Building;
 import svinerus.buildtogether.building.BuildingsManager;
 import svinerus.buildtogether.commands.CommandListener;
@@ -65,6 +66,7 @@ public final class BuildTogether extends JavaPlugin {
         try {
             buildingsManager.shutdown();
             buildingsManager = null;
+            BlockTip.killAll();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
