@@ -21,6 +21,13 @@ import static svinerus.buildtogether.utils.Localization.lt;
 
 public class CmdBlocks implements ICommand {
 
+    public static Inventory inv;
+
+    public CmdBlocks() {
+        var invTitle = Component.text(lt("need_blocks_inv.title"), NamedTextColor.GOLD);
+        inv = Bukkit.createInventory(null, 27, invTitle);
+    }
+
     public String getPerms() {
         return "blocks";
     }
@@ -42,13 +49,11 @@ public class CmdBlocks implements ICommand {
 
 
     // open inv with needed blocks
-    private static void needBlocksInv(Player player, Building building) {
-        var invTitle = Component.text(lt("need_blocks_inv.title"), NamedTextColor.GOLD);
-        Inventory inv = Bukkit.createInventory(null, 27, invTitle);
-
+    private void needBlocksInv(Player player, Building building) {
         var needBlocks = building.needBlocksSorted();
         var playerInv = player.getInventory();
 
+        inv.clear();
         for (var entry : needBlocks)
             inv.addItem(createItem(entry.getKey(), entry.getValue().intValue(), playerInv.contains(entry.getKey())));
 

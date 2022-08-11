@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import svinerus.buildtogether.BuildTogether;
+import svinerus.buildtogether.commands.CmdBlocks;
 import svinerus.buildtogether.utils.Utils;
 
 public class EventListener implements Listener {
@@ -62,8 +63,8 @@ public class EventListener implements Listener {
     // disable ability to get blocks from custom inventory
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
-        if (e.getInventory().getHolder() != null) return;
-        e.setCancelled(true);
+        if (e.getInventory() == CmdBlocks.inv)
+            e.setCancelled(true);
     }
 
 }
