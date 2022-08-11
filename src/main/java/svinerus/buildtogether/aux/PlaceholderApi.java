@@ -57,16 +57,8 @@ public class PlaceholderApi extends PlaceholderExpansion {
 
 
     private String onPlaceholderRequest(Player player, String[] p) {
-        if (Objects.equals(p[0], "timemod")) {
-            if (p.length < 2) return "bt_timemod_<mod>_[seconds]";
-            var div = p.length == 3 ? Integer.parseInt(p[2]) : 1;
-            return String.valueOf(System.currentTimeMillis() / 1000L / div % Integer.parseInt(p[1]));
-        }
-
-
         if ("isinside".equals(p[0]))
             return BuildTogether.buildingsManager.getBuilding(player.getLocation()) != null ? "yes" : "no";
-
 
         if (p.length < 2) return "bt_<command>_<buildingname>";
         var building = "inside".equals(p[1]) ?
@@ -76,6 +68,12 @@ public class PlaceholderApi extends PlaceholderExpansion {
         if (building == null) return "No such building";
 
         switch (p[0]) {
+
+            case "correct-blocks":
+                return String.valueOf(building.correctBlocks());
+
+            case "total-blocks":
+                return String.valueOf(building.getTotalBlocks());
 
             case "progress":
                 return String.valueOf((int) (building.progress() * 100));

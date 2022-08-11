@@ -93,8 +93,20 @@ public class Building {
           || points2D.stream().map(bv2 -> BlockVector3.at(bv2.getX(), yMax, bv2.getZ())).anyMatch(this.buildingSchema.region::contains);
     }
 
+    public int correctBlocks() {
+        var correctBlocks = 0;
+        for (var l=0; l <= activeLayerIndex; l++) // sum blocks from already build layers and active one
+            correctBlocks += buildingSchema.layers.get(l).blocks.size();
+        correctBlocks -= needBlocksCache.size(); // minus incorrect blocks from active layer
+        return correctBlocks;
+    }
+
+    public int getTotalBlocks() {
+        return buildingSchema.layers.stream().mapToInt(l -> l.blocks.size()).sum();
+    }
+
     public double progress() {
-        return (double) activeLayerIndex / this.buildingSchema.layers.size();
+        return (double) correctBlocks() / getTotalBlocks();
     }
 
 
