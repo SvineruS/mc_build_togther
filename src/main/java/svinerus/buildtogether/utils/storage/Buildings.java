@@ -6,6 +6,7 @@ import svinerus.buildtogether.utils.Utils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class Buildings {
 
     public static void off(String buildingName) throws IOException {
         var filePath = getBuildingPath(buildingName);
-        Files.move(filePath, filePath.resolveSibling(buildingName + ".off"));
+        Files.move(filePath, filePath.resolveSibling(buildingName + ".off"), StandardCopyOption.REPLACE_EXISTING);
     }
 
     public static boolean isExist(String buildingName) {
