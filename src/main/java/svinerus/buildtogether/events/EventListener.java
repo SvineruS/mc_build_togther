@@ -3,6 +3,7 @@ package svinerus.buildtogether.events;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -46,9 +47,11 @@ public class EventListener implements Listener {
 
         if (blockPlacement.isCorrect()) {
             Utils.spawnParticles(loc, Particle.HEART);
+            loc.getWorld().playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             return false;
         } else {
             Utils.spawnParticles(loc, Particle.ELECTRIC_SPARK);
+            loc.getWorld().playSound(loc, Sound.ENTITY_VILLAGER_NO, 1, 1);
             return true;
         }
 
